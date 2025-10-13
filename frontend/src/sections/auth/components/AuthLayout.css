@@ -1,0 +1,37 @@
+/* Layout shell uses dynamic viewport units for mobile browser chrome */
+.auth-layout{
+  min-height: 100dvh; /* fallback comes from body/html height in index.css */
+  display: grid;
+  grid-template-rows: 1fr; /* main area fills */
+}
+
+/* Fixed top-left logo with safe-area support */
+.site-logo{
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: calc(12px + env(safe-area-inset-left));
+  z-index: 20;
+}
+.site-logo__link{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.site-logo__img{
+  height: clamp(24px, 5vw, 70px);
+  width: auto;
+  display: block;
+}
+.site-logo__sr{
+  position: absolute !important; /* visually hidden, accessible name */
+  height: 1px; width: 1px; overflow: hidden; clip: rect(1px,1px,1px,1px);
+}
+
+/* Center card responsively without overlapping logo */
+.auth-center{
+  display: grid;
+  place-items: center;
+  padding: clamp(12px, 3vw, 24px);
+  min-height: 100dvh; /* keeps it centered even with small content */
+}

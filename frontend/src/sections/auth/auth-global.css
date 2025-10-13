@@ -1,0 +1,80 @@
+/* ===== AUTH GLOBAL (scoped) ===== */
+.auth-root{
+  /* theme vars (used by AuthCard gradient too) */
+  --bg-grad-start:#3b81d6;  
+  --bg-grad-mid:#5c92d3;    
+  --bg-grad-deep:#f7ac61;   
+  --bg-grad-bottom:#F57D03;
+  --radius-lg:24px;
+  --radius-md:12px;
+  --text:#212529;
+  --muted:#6c757d;
+  --border:#dee2e6;
+
+  /* page surface for auth */
+  background:#fff;
+  color:var(--text);
+  min-height:100%;
+}
+
+/* utilities (auth-only) */
+.auth-root .icon-xl{ font-size:clamp(48px, 8vw, 72px); color:#fff; }
+.auth-root .text-faint{ color:var(--muted); }
+.auth-root .link-faint{ color:#0d6efd; text-decoration:none; }
+.auth-root .link-faint:hover{ text-decoration:underline; }
+
+/* buttons: white text/border; blue on hover (auth-only) */
+.auth-root .btn{
+  background:transparent !important;
+  color:#fff !important;
+  border:1.5px solid rgba(255,255,255,.95) !important;
+  border-radius:var(--radius-md);
+  min-height:44px;
+  font-weight:600;
+  transition:background-color .2s, color .2s, border-color .2s, box-shadow .2s;
+}
+.auth-root .btn:hover,
+.auth-root .btn:active,
+.auth-root .btn:focus:hover{
+  background:#0d6efd !important;
+  border-color:#0d6efd !important;
+  color:#fff !important;
+}
+.auth-root .btn:focus-visible{ outline:0; box-shadow:0 0 0 .25rem rgba(13,110,253,.35); }
+.auth-root .btn:disabled{ opacity:.6; pointer-events:none; }
+
+/* inputs: white fields, icon span without chip (auth-only) */
+.auth-root .form-label{ color:#fff; margin-bottom:.35rem; }
+.auth-root .form-control{
+  background:#fff; color:var(--text);
+  border:1px solid var(--border);
+  border-radius:var(--radius-md) !important;
+  min-height:44px;
+  box-shadow:none;
+}
+.auth-root .input-group-text{
+  background:#fff; color:var(--muted);
+  border:1px solid var(--border); border-right:0;
+  border-radius:var(--radius-md) 0 0 var(--radius-md) !important;
+  display:flex; align-items:center; padding-inline:.75rem;
+}
+.auth-root .input-group > .form-control{
+  border-left:0;
+  border-radius:0 var(--radius-md) var(--radius-md) 0 !important;
+}
+
+/* remove focus glow (auth-only) but keep error state visible */
+.auth-root input:focus,
+.auth-root textarea:focus,
+.auth-root select:focus,
+.auth-root .form-control:focus,
+.auth-root .form-select:focus{
+  outline:0 !important; box-shadow:none !important; border-color:var(--border) !important;
+}
+.auth-root .form-check-input:focus{ outline:0 !important; box-shadow:none !important; border-color:var(--border) !important; }
+.auth-root .form-control.is-invalid,
+.auth-root .was-validated .form-control:invalid{ border-color:#dc3545 !important; }
+.auth-root .form-control.is-invalid:focus,
+.auth-root .was-validated .form-control:invalid:focus{ border-color:#dc3545 !important; box-shadow:none !important; }
+.auth-root .form-check-input.is-invalid,
+.auth-root .was-validated .form-check-input:invalid{ border-color:#dc3545 !important; box-shadow:none !important; }

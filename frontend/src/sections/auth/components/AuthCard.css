@@ -1,0 +1,21 @@
+/* Gradient background on CARD */
+.auth-card{
+  width: 360px;
+  border-radius: var(--radius-lg);
+  color:#fff; /* card text defaults to white; override in pages if needed */
+  background: linear-gradient(
+    135deg,
+    var(--bg-grad-start) 0%,
+    var(--bg-grad-mid) 35%,
+    var(--bg-grad-deep) 75%,
+    var(--bg-grad-bottom) 100%
+  ) !important;
+  box-shadow: 0 12px 30px rgba(20, 20, 20, 0.15);
+  border: 0;
+}
+
+/* Icon area on top of card */
+.auth-card__icon{ line-height:1; }
+
+/* Optional: add subtle inner separation so white inputs stand out */
+.auth-card .form-label { color:#fff; } /* labels readable on gradient */

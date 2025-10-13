@@ -1,0 +1,4 @@
+/* Page-only tweaks */
+.pm-dashboard .btn { border-radius:8px; }
+.pm-dashboard .btn-group .btn { padding:.25rem .6rem; }
+.pm-dashboard .filters { gap:8px; }

@@ -1,0 +1,2 @@
+/* keep only app-wide basics here */
+html, body, #root { height: 100%; }

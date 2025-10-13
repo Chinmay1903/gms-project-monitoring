@@ -1,0 +1,82 @@
+/* Uses dashboard CSS variables if present; falls back to safe defaults */
+.app-header-root.pm-appbar{
+  background: var(--pm-surface, #ffffff);
+  border: 1px solid var(--pm-border, #d1d5db);
+  border-radius: 10px;
+  padding: 8px 12px;
+  width: 100%;
+  font-size: large;
+}
+
+/* Brand */
+.app-header-root .pm-brand{
+  display:flex; align-items:center; gap:10px;
+  font-weight:600; color:#111827; text-decoration:none;
+}
+.app-header-root .pm-logo{ height: 82px; width:auto; }
+
+/* Tabs */
+.app-header-root .pm-tabs .nav-link{
+  display:flex; align-items:center; gap:8px;
+  color:#374151; border:1px solid transparent; border-radius:999px;
+  padding:.4rem .75rem; font-weight:500;
+}
+.app-header-root .pm-tabs .nav-link .bi{ font-size:16px; }
+.app-header-root .pm-tabs .nav-link.active{
+  color:#0d6efd;
+  background: rgba(13,110,253,.08);
+  border-color:#bcd3fb;
+}
+
+/* Admin chip */
+.app-header-root .pm-admin{
+  border:1px solid var(--pm-border, #d1d5db);
+  border-radius:999px;
+  padding:.35rem .7rem;
+  color:#111827; background:#fff;
+  font-size: large;
+}
+
+/* container for button + menu */
+.pm-admin-wrap{
+  position: relative;
+}
+
+/* dropdown panel */
+.pm-admin-menu{
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: #fff;
+  border: 1px solid var(--pm-border, #d1d5db);
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  min-width: 180px;
+  padding: 6px;
+  z-index: 1000;
+  display: none;
+}
+.pm-admin-menu.show{ display:block; }
+
+/* items */
+.pm-menu-item{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  border: 0;
+  padding: .5rem .6rem;
+  border-radius: 8px;
+  text-align: left;
+  color: #111827;
+}
+.pm-menu-item:hover{
+  background: #f3f4f6;
+}
+.pm-menu-divider{
+  border-top: 1px solid #e5e7eb;
+  margin: 6px 0;
+}
+
+/* Full-width friendliness */
+.app-header-root{ margin: 0; }

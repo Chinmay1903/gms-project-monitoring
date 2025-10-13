@@ -1,0 +1,66 @@
+/* scope everything under .rl-scope to avoid global bleed */
+/* .rl-scope .card { 
+  border-radius: .5rem; 
+} */
+
+/* .rl-scope .table.has-actions { 
+  table-layout: fixed; 
+} */
+
+.rl-scope .table th.actions-col,
+.rl-scope .table td.actions-col {
+  width: 160px;
+}
+
+/* Icon-first action buttons (Edit/Delete/Add) */
+.rl-scope .btn.action-btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.rl-scope .btn.action-btn .label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width .18s, opacity .18s, margin-left .18s;
+}
+
+.rl-scope .btn.action-btn:hover .label,
+.rl-scope .btn.action-btn:focus-visible .label {
+  max-width: 10rem;
+  opacity: 1;
+  margin-left: .3rem;
+}
+
+.rl-scope .action-wrap {
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+}
+
+/* Sorting UI (mirrors your cshtml) */
+.rl-scope th.sortable {
+  user-select: none;
+}
+
+.rl-scope th.sortable > button.sort-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  color: inherit;
+}
+
+.rl-scope th.sortable .sort-icon {
+  opacity: .6;
+}
+
+.rl-scope th.sortable.active .sort-icon {
+  opacity: 1;
+}

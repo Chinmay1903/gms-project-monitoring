@@ -1,0 +1,104 @@
+/* ===== Project List (scoped) ===== */
+/* .pl-scope .card {
+  border-radius: .5rem;
+} */
+
+/* Table layout + actions column */
+/* .pl-scope .table.has-actions {
+  table-layout: fixed;
+} */
+
+.pl-scope .table th.actions-col,
+.pl-scope .table td.actions-col {
+  /* display: flex;
+  justify-content: center; */
+  width: 160px;
+}
+
+/* Icon-first action buttons (Add/Edit/Delete) */
+.pl-scope .btn.action-btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pl-scope .btn.action-btn .label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width .18s, opacity .18s, margin-left .18s;
+}
+.pl-scope .btn.action-btn:hover .label,
+.pl-scope .btn.action-btn:focus-visible .label {
+  max-width: 10rem;
+  opacity: 1;
+  margin-left: .3rem;
+}
+
+/* Grouped actions */
+.pl-scope .action-wrap {
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+}
+
+/* Sortable headers (CSHTML parity) */
+.pl-scope th.sortable {
+  user-select: none;
+}
+.pl-scope th.sortable > button.sort-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  color: inherit;
+}
+.pl-scope th.sortable .sort-icon {
+  opacity: .6;
+}
+.pl-scope th.sortable.active .sort-icon {
+  opacity: 1;
+}
+
+/* Filters row (right-aligned controls) */
+.pl-scope .filter-wrap {
+  gap: .5rem;
+}
+.pl-scope .filter-wrap .reset {
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* Compact inputs in filter bar */
+.pl-scope .date-input {
+  height: 31px;
+  padding: .125rem .5rem;
+  font-size: .875rem;
+}
+
+/* Table framing (border + subtle elevation) */
+.pl-scope .table-responsive {
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: .5rem;
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+}
+
+/* Optional: ensure bordered grid when using table-bordered */
+.pl-scope table.table-bordered > :not(caption) > * > * {
+  border-width: 1px;
+}
+
+.pl-scope .header-search {
+  width: clamp(260px, 28vw, 350px);
+}
+
+.pl-scope .filter-wrap .form-select {
+  font-size: 14px;
+  font-weight: 600;
+}

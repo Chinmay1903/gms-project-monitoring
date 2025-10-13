@@ -1,0 +1,153 @@
+.tasks-page{ padding: 6px 8px; }
+
+.tasks-actions{
+    margin: 6px 0 8px;
+}
+
+/* Card shell */
+.tasks-card.card{
+  border-radius: 10px;
+  border: 1px solid var(--pm-border, #d1d5db);
+  overflow: hidden;
+}
+
+/* Toolbar (buttery strip) */
+.tasks-toolbar{
+  position: relative;
+  background: #f6eec7;
+  border-bottom: 1px solid #e5dca8;
+  padding: 10px;
+}
+.tasks-toolbar .title{
+  font-weight: 700;
+  font-size: 1rem;
+}
+.tasks-toolbar .hint{
+  position: absolute;
+  right: 12px;
+  top: 10px;
+}
+
+/* Floating add button inside toolbar (right side) */
+.fab-add{
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  border-radius: 12px;
+  padding: .35rem .6rem;
+}
+
+/* Table look */
+.tasks-table thead th{
+  background: #e9f2f6;
+  color: #374151;
+  border-bottom: 1px solid #cfe3ec;
+  font-weight: 600;
+}
+.tasks-table tbody tr:nth-child(odd){  background:#e6f6ff; }
+.tasks-table tbody tr:nth-child(even){ background:#d8eef9; }
+.tasks-table td, .tasks-table th{ vertical-align: middle; }
+
+/* Sort indicator */
+th .sort{ color:#9ca3af; }
+th .sort.asc  { color:#0d6efd; transform: rotate(180deg); display:inline-block; }
+th .sort.desc { color:#0d6efd; }
+
+/* Trainer link */
+.name-link{ color:#0d6efd; text-decoration:none; }
+.name-link:hover{ text-decoration:underline; }
+
+/* Modal polish */
+.modal-content{ border-radius: 10px; }
+.modal-header{ border-bottom: 1px solid #e5e7eb; }
+.modal-footer{ border-top: 1px solid #e5e7eb; }
+
+@media (max-width: 576px){
+  .tasks-toolbar .hint{ position: static; margin-top: 4px; }
+  .fab-add{ position: static; margin-top: 6px; }
+}
+.tasks-page{ padding: 6px 8px; }
+
+/* Card shell */
+.tasks-card.card{
+  border-radius: 10px;
+  border: 1px solid var(--pm-border, #d1d5db);
+  overflow: hidden;
+}
+
+/* Toolbar (buttery strip) */
+.tasks-toolbar{
+  position: relative;
+  background: #f6eec7;
+  border-bottom: 1px solid #e5dca8;
+  padding: 10px;
+}
+.tasks-toolbar .title{
+  font-weight: 700;
+  font-size: 1rem;
+}
+.tasks-toolbar .hint{
+  position: absolute;
+  right: 12px;
+  top: 10px;
+}
+
+/* Floating add button inside toolbar (right side) */
+.fab-add{
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  border-radius: 12px;
+  padding: .35rem .6rem;
+}
+
+/* Table look */
+.tasks-table thead th{
+  background: #e9f2f6;
+  color: #374151;
+  border-bottom: 1px solid #cfe3ec;
+  font-weight: 600;
+}
+.tasks-table tbody tr:nth-child(odd){  background:#e6f6ff; }
+.tasks-table tbody tr:nth-child(even){ background:#d8eef9; }
+.tasks-table td, .tasks-table th{ vertical-align: middle; }
+
+/* Sort indicator */
+.tasks-table th.sortable {
+  user-select: none;
+}
+
+.tasks-table th.sortable > button.sort-btn {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: .25rem;
+  color: inherit;
+}
+
+.tasks-table th.sortable .sort-icon {
+  opacity: .6;
+}
+
+.tasks-table th.sortable.active .sort-icon {
+  opacity: 1;
+}
+
+
+/* Trainer link */
+.name-link{ color:#0d6efd; text-decoration:none; }
+.name-link:hover{ text-decoration:underline; }
+
+/* Modal polish */
+.modal-content{ border-radius: 10px; }
+.modal-header{ border-bottom: 1px solid #e5e7eb; }
+.modal-footer{ border-top: 1px solid #e5e7eb; }
+
+@media (max-width: 576px){
+  .tasks-toolbar .hint{ position: static; margin-top: 4px; }
+  .fab-add{ position: static; margin-top: 6px; }
+}

@@ -1,0 +1,39 @@
+.ss-wrap{
+  position: relative;
+  width: 100%;
+}
+.ss-menu{
+  position: absolute;
+  z-index: 1050;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  display: none;
+}
+.ss-menu.show{ display:block; }
+
+.ss-menu-body{
+  background: #fff;
+  border: 1px solid var(--pm-border, #d1d5db);
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  max-height: 260px;        /* handles dynamic long arrays */
+  overflow: auto;
+  padding: 6px;
+}
+
+.ss-item{
+  border: 0;
+  border-radius: 8px !important;
+  margin: 2px 0;
+  padding: .45rem .6rem;
+  cursor: pointer;
+}
+.ss-item.active,
+.ss-item:focus{
+  background: #0d6efd;
+  color: #fff;
+}
+.ss-empty{
+  padding: .5rem .6rem;
+}

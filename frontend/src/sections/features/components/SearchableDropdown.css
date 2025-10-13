@@ -1,0 +1,38 @@
+.sd-root{ position: relative; }
+
+.sd-toggle{
+  border: 1px solid var(--pm-border, #d1d5db);
+  background: #fff;
+  border-radius: var(--bs-border-radius);
+  padding: .375rem .75rem;
+  text-align: left;
+}
+
+.sd-value{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.sd-menu{
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: #fff;
+  border: 1px solid var(--pm-border, #d1d5db);
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+.sd-item{
+  padding: .45rem .65rem;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+}
+.sd-item:last-child{ border-bottom: 0; }
+.sd-item:hover, .sd-item.active{
+  background: #eef2ff;
+}
+.sd-empty{ padding: .6rem; }
+
+.sd-menu mark{
+  background: #fffbcc;
+  padding: 0 .1em;
+}

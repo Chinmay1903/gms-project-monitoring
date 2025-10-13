@@ -1,0 +1,73 @@
+/* ===== Dashboard Global (scoped) ===== */
+.dashboard-root{
+  --pm-primary:#3b81d6;   /* blue in the screenshot */
+  --pm-accent:#F57D03;    /* accent orange */
+  --pm-bg:#f3f4f6;        /* page background */
+  --pm-surface:#ffffff;   /* card/nav surface */
+  --pm-muted:#6b7280;     /* gray-500 */
+  --pm-border:#d1d5db;    /* gray-300 */
+
+  background: var(--pm-bg);
+  color:#111827;
+  min-height:100vh;
+  padding: 10px 12px; /* tight page paddings like the image */
+}
+
+/* ===== Cards ===== */
+.dashboard-root .card{
+  background: var(--pm-surface);
+  border:1px solid var(--pm-border);
+  border-radius: 10px;
+}
+.dashboard-root .card-header{
+  background: var(--pm-surface);
+  border-bottom:1px solid var(--pm-border);
+  padding: .6rem .8rem;
+}
+.dashboard-root .card-header h6{
+  margin:0; font-weight:600; color:#111827; font-size: .95rem;
+}
+
+/* ===== Overview filter area ===== */
+.dashboard-root .pm-chip-group .btn{
+  background:#fff;
+  color:#111827;
+  border:1px solid var(--pm-border);
+  padding:.25rem .6rem;
+  border-radius:6px;
+  font-weight:500;
+}
+.dashboard-root .pm-chip-group .btn.active,
+.dashboard-root .pm-chip-group .btn:hover{
+  background:#0d6efd; border-color:#0d6efd; color:#fff;
+}
+
+.dashboard-root .pm-compact-select,
+.dashboard-root .pm-compact-input{
+  min-height: 34px;
+  border-radius: 8px;
+  border:1px solid var(--pm-border);
+  width: auto !important;
+}
+
+/* ===== Table ===== */
+.dashboard-root .table thead th{
+  background:#f8fafc; color:#374151; font-weight:600; font-size:.9rem;
+  border-bottom:1px solid var(--pm-border);
+}
+.dashboard-root .table tbody td{ font-size:.92rem; }
+.dashboard-root .table{ margin-bottom:0; }
+
+/* ===== Chart cards ===== */
+.dashboard-root .card-body{ min-height: 280px; }
+.dashboard-root .legend{
+  display:flex; gap:16px; justify-content:center; align-items:center;
+  margin-top:6px; font-size:.85rem; color:#374151;
+}
+.dashboard-root .legend .dot{
+  width:12px; height:12px; border-radius:999px; display:inline-block; margin-right:6px;
+}
+
+footer.pm-footer{
+  color: var(--pm-muted); margin: 10px 0;
+}
