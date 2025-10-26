@@ -1,27 +1,32 @@
 services:
+  # --- Backend (FastAPI) ---
   - type: web
-    name: gms-project-manager-backend
-    rootDir: backend
+    name: fastapi-backend
     env: python
-    plan: starter  # bump to "standard" if needed
+    rootDir: backend
+    plan: starter  # or standard
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn -k uvicorn.workers.UvicornWorker app:app --bind 0.0.0.0:10000
+    autoDeploy: true
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: gms-project-manager-db
+          name: app-db
           property: connectionString
 
-  - type: static
-    name: gms-project-manager-frontend
+  # --- Frontend (React) ---
+  - type: web
+    name: react-frontend
+    env: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: build
+    autoDeploy: true
     envVars:
       - key: REACT_APP_API_URL
         value: https://fastapi-backend.onrender.com
 
 databases:
-  - name: gms-project-manager-db
-    databaseName: gmsprojectmanagerdb
+  - name: app-db
+    databaseName: appdb
     user: appuser
