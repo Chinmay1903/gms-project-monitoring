@@ -15,6 +15,7 @@ from typing import List
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from pg_db import database
+from fastapi.staticfiles import StaticFiles
  
 app = FastAPI()
 
@@ -224,3 +225,9 @@ async def update_task(task_id: int, task: TaskMonitorUpdate):
 @app.get("/dashboard/summary", tags=["Dashboard"])
 async def get_dashboard_summary():
     return await DashboardCurdOperation.get_dashboard_summary()
+
+
+
+## ------------------------------------FE Endpoints-----------------------------
+
+app.mount("/", StaticFiles(directory="frontend_build", html=True), name="static")
