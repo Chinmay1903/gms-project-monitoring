@@ -59,7 +59,7 @@ export default function ResourceList() {
 
         fetchRoles();
         fetchEmployees();
-    }, []);
+    });
 
     // ---------- defaults for ALL fields ----------
     const emptyForm = {
@@ -288,10 +288,10 @@ export default function ResourceList() {
     const normalize = (s) => s?.replace("T", " ").replace("Z", "") || "";
 
     // Display Date as DD-MM-YYYY
-    const toYMD = (ymd) => {
-        ymd =normalize(ymd);
-        return ymd ? ymd.slice(0, 10) : "";
-    };
+    // const toYMD = (ymd) => {
+    //     ymd =normalize(ymd);
+    //     return ymd ? ymd.slice(0, 10) : "";
+    // };
     const toDMY = (dmy) => {
         dmy = normalize(dmy);
         if (!dmy) return "";

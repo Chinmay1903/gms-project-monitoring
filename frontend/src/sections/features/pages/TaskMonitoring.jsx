@@ -152,24 +152,7 @@ export default function TaskMonitoring() {
       }
     };
     loadData();
-  }, []);
-
-  useEffect(() => {if (!form.trainerId) return;                    // need a trainer first
-  if (loadingProjects) return;
-
-  if (trainerProjects.length === 0) {
-    // no projects for this trainer → clear selection
-    setForm(f => ({ ...f, project_id: "", project:"", manager:"", lead:"", podLead:"" }));
-    return;
-  }
-
-  // If current selection is empty or not in the new list, pick the first and trigger handler
-  const hasSelected = trainerProjects.some(p => String(p.project_id) === String(form.project_id));
-  if (!hasSelected) {
-    const firstId = String(trainerProjects[0].project_id);
-    onProjectChange(firstId);                     // ← programmatically trigger
-  }
-}, [form.trainerId, loadingProjects, trainerProjects]);
+  },);
 
   const normalize = (f) => ({
     date: f.date || today,
@@ -273,6 +256,23 @@ export default function TaskMonitoring() {
   //     .map(r => r.project);
   //   return base.filter(p => !taken.includes(p.project));
   // }, [trainerMap, form.trainerId, form.date, rows, mode, form.id]);
+
+  useEffect(() => {if (!form.trainerId) return;                    // need a trainer first
+    if (loadingProjects) return;
+
+    if (trainerProjects.length === 0) {
+      // no projects for this trainer → clear selection
+      setForm(f => ({ ...f, project_id: "", project:"", manager:"", lead:"", podLead:"" }));
+      return;
+    }
+
+    // If current selection is empty or not in the new list, pick the first and trigger handler
+    const hasSelected = trainerProjects.some(p => String(p.project_id) === String(form.project_id));
+    if (!hasSelected) {
+      const firstId = String(trainerProjects[0].project_id);
+      onProjectChange(firstId);                     // ← programmatically trigger
+    }
+  }, [form.trainerId, loadingProjects, trainerProjects]);
 
 
   /* -------------------------------- validation ------------------------------- */
