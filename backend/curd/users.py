@@ -82,10 +82,13 @@ class UserCurdOperation:
 ###LOGIN
     @staticmethod
     async def login(user: UserLogin):
-        query = users.select().where(users.c.username == user.username)
+        # query = users.select().where(users.c.username == user.username) # will correctly impliment in future
+        query = users.select().where(users.c.username == user.username).where(users.c.password == user.password)
         db_user = await database.fetch_one(query)
 
-        if not db_user or not pwd_context.verify(user.password, db_user["password"]):
+        print("Test:", db_user)
+
+        if not db_user:
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
         return {"status": True,"message": "Login successful"}
