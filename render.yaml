@@ -1,7 +1,7 @@
 services:
   # --- Backend (FastAPI) ---
   - type: web
-    name: fastapi-backend
+    name: gms-project-manager-backend
     env: python
     rootDir: backend
     plan: starter  # or standard
@@ -11,12 +11,12 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: app-db
+          name: gms-project-manager-db
           property: connectionString
 
   # --- Frontend (React) ---
   - type: web
-    name: react-frontend
+    name: gms-project-manager-frontend
     env: static
     rootDir: frontend
     buildCommand: npm ci && npm run build
@@ -27,6 +27,6 @@ services:
         value: https://fastapi-backend.onrender.com
 
 databases:
-  - name: app-db
-    databaseName: appdb
+  - name: gms-project-manager-db
+    databaseName: gmsprojectmanagerdb
     user: appuser
