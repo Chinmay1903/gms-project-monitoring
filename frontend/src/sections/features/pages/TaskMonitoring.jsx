@@ -75,7 +75,8 @@ export default function TaskMonitoring() {
   const [range, setRange] = useState("day"); // day | week | month | overall
   const [view, setView] = useState({ type: "overview" }); // {type:"trainer", trainerId, name}
   const anchor = today; // chips are relative to "today" like screenshot
-
+ 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const isInRange = (ymd) => {
     if (range === "overall") return true;
     const d = new Date(ymd + "T00:00:00");
@@ -272,6 +273,7 @@ export default function TaskMonitoring() {
       const firstId = String(trainerProjects[0].project_id);
       onProjectChange(firstId);                     // ← programmatically trigger
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.trainerId, loadingProjects, trainerProjects]);
 
 
