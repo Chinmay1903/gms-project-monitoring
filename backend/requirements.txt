@@ -5,11 +5,10 @@ typing
 uuid
 pydantic
 passlib
-psycopg2
+psycopg2-binary
 fastapi
 bcrypt
-asyncio
-uvicorn
+uvicorn[standard]
 asyncpg
 python-multipart
 python-dotenv
