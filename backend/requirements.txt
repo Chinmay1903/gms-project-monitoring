@@ -1,8 +1,6 @@
 SQLAlchemy
 databases
 DateTime
-typing
-uuid
 pydantic
 passlib
 psycopg2-binary
