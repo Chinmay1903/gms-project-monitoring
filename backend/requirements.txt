@@ -10,3 +10,4 @@ uvicorn[standard]
 asyncpg
 python-multipart
 python-dotenv
+argon2_cffi
