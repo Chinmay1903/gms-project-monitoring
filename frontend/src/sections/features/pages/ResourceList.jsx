@@ -329,7 +329,7 @@ export default function ResourceList() {
                                         <button
                                             key={role}
                                             type="button"
-                                        className={`btn btn-sm ${roleTab === role ? "btn-outline-danger active" : "btn-outline-secondary"}`}
+                                        className={`btn btn-sm ${roleTab === role ? "btn-outline-primary active" : "btn-outline-primary"}`}
                                             aria-pressed={roleTab === role}
                                         onClick={() => setRoleTab(role)}>
                                         {role === "All" ? "All" : `${role}s`}
@@ -358,8 +358,8 @@ export default function ResourceList() {
                     </div>
 
                     {/* Table */}
-                    <div className="table-responsive bg-warning-subtle text-warning-emphasis rounded shadow">
-                        <table className="table table-info table-striped-columns table-hover align-middle mb-0 has-actions">
+                    <div className="table-responsive">
+                        <table className="table table-hover tasks-table">
                             <thead className="table-success">
                                 <tr>
                                     <Th label="ID" k="id" />
