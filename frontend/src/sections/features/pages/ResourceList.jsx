@@ -59,7 +59,7 @@ export default function ResourceList() {
 
         fetchRoles();
         fetchEmployees();
-    });
+    }, []);
 
     // ---------- defaults for ALL fields ----------
     const emptyForm = {

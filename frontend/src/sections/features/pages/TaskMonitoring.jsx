@@ -153,7 +153,7 @@ export default function TaskMonitoring() {
       }
     };
     loadData();
-  },);
+  },[]);
 
   const normalize = (f) => ({
     date: f.date || today,

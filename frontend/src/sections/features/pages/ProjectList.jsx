@@ -49,7 +49,7 @@ export default function ProjectList() {
     // ---- load data from API ----
     useEffect(() => {
         loadData();
-    });
+    }, []);
     
     const loadData = async () => {
         setLoading(true);
@@ -663,16 +663,16 @@ function Th({ label, k, sortKey, sortDir, onSort }) {
 }
 
 // Utility: fit a <select> to its selected option text
-// function autosizeSelect(el) {
-//     if (!el) return;
-//     const span = document.createElement("span");
-//     span.style.visibility = "hidden";
-//     span.style.whiteSpace = "pre";
-//     span.style.position = "absolute";
-//     span.textContent = el.options[el.selectedIndex]?.text || "";
-//     document.body.appendChild(span);
-//     // base + caret + padding buffer
-//     const w = Math.ceil(span.getBoundingClientRect().width + 48);
-//     el.style.width = `${w}px`;
-//     document.body.removeChild(span);
-// }
+function autosizeSelect(el) {
+    if (!el) return;
+    const span = document.createElement("span");
+    span.style.visibility = "hidden";
+    span.style.whiteSpace = "pre";
+    span.style.position = "absolute";
+    span.textContent = el.options[el.selectedIndex]?.text || "";
+    document.body.appendChild(span);
+    // base + caret + padding buffer
+    const w = Math.ceil(span.getBoundingClientRect().width + 48);
+    el.style.width = `${w}px`;
+    document.body.removeChild(span);
+}
