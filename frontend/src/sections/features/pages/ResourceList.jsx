@@ -329,7 +329,7 @@ export default function ResourceList() {
                                         <button
                                             key={role}
                                             type="button"
-                                        className={`btn btn-sm ${roleTab === role ? "btn-outline-primary active" : "btn-outline-primary"}`}
+                                        className={`btn btn-sm btn-outline-primary ${roleTab === role ? "active" : ""}`}
                                             aria-pressed={roleTab === role}
                                         onClick={() => setRoleTab(role)}>
                                         {role === "All" ? "All" : `${role}s`}
