@@ -1,10 +1,11 @@
 import datetime, uuid
 from schema.users import UserEntry,UserList,UserLogin,UserUpdate
 from pg_db import database,users
+from sqlalchemy import select
 from fastapi import HTTPException
 from passlib.context import CryptContext
  
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 
 ## End Point for User table
@@ -82,13 +83,10 @@ class UserCurdOperation:
 ###LOGIN
     @staticmethod
     async def login(user: UserLogin):
-        # query = users.select().where(users.c.username == user.username) # will correctly impliment in future
-        query = users.select().where(users.c.username == user.username).where(users.c.password == user.password)
+        query = users.select().where(users.c.username == user.username)
         db_user = await database.fetch_one(query)
 
-        print("Test:", db_user)
-
-        if not db_user:
+        if not db_user or not pwd_context.verify(user.password, db_user["password"]):
             raise HTTPException(status_code=401, detail="Invalid username or password")
         
         return {"status": True,"message": "Login successful"}
