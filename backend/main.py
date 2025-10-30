@@ -230,4 +230,4 @@ async def get_dashboard_summary():
 
 ## ------------------------------------FE Endpoints-----------------------------
 
-app.mount("/", StaticFiles(directory="frontend_build", html=True), name="static")
+# app.mount("/", StaticFiles(directory="frontend_build", html=True), name="static")
