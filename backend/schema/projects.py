@@ -19,6 +19,8 @@ class ProjectsEntry(BaseModel):
     lead_name       : str = Field(..., example="Lead Name")
     pod_name        : str = Field(..., example="POD Name")
     trainer_name    : str = Field(..., example="Trainer")
+    status          : str
+    inactive_at     : str
     
 class ProjectsUpdate(BaseModel):
     #project_id      : int = Field(..., example="Enter Project id")
