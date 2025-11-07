@@ -592,9 +592,10 @@ export default function ProjectList() {
                                                             <input
                                                                 type="date"
                                                                 className={`form-control ${submitted && errors.start ? "is-invalid" : ""}`}
-                                                                value={mode === "edit" ? toYMD(form.start) : todayYMD}
+                                                                value={toYMD(form.start)}
                                                                 onChange={(e) => setForm({ ...form, start: e.target.value })}
                                                                 placeholder="Select start date"
+                                                                max={todayYMD}
                                                             />
                                                             {mode === "edit" && (
                                                                 <div className="form-check ms-2">
