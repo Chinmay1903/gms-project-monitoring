@@ -1,8 +1,8 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import AppLayout from "../components/AppLayout";
 import "./ProjectList.css";
 import { getEmployeeNames,getProjects, addProject,updateProject,deleteProject } from "../../../api/features";
-// import SearchableDropdown from "../components/SearchableDropdown";
+import SearchableDropdown from "../components/SearchableDropdown";
 import SearchableSelect from "../components/SearchableSelect";
 
 export default function ProjectList() {
@@ -30,7 +30,7 @@ export default function ProjectList() {
     };
 
     // ---- modal (single for add/edit) ----
-    const emptyForm = { id: "", name: "", manager: "", lead: "", podLead: "", trainer: "", start: todayYMD, end: "", status: "1" };
+    const emptyForm = { id: null, name: "", manager: "", lead: "", podLead: "", trainer: "", trainer_id: "", start: todayYMD, end: "", status: "1", staff_id: null};
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState(emptyForm);
     const [mode, setMode] = useState("add");
@@ -61,15 +61,17 @@ export default function ProjectList() {
             
             const projectData = Array.isArray(projRes?.data) ? projRes.data.map(p => ({
                 ...emptyForm,
-                id: p.id ?? p.project_id ?? "",
+                project_id: p.project_id ?? p.project_id ?? p._id ?? p.projectId ?? p.employees_id,
                 name: (p.name ?? p.project_name ?? "").toString(),
                 manager: p.manager ?? p.gms_manager ?? "",
-                lead: p.lead ?? p.lead_name ?? "",
-                podLead: p.podLead ?? p.pod_name ?? p.pod_lead_name ?? "",
-                trainer: p.trainer ?? p.trainer_name ?? "",
-                start: p.start ?? p.create_at ?? "",
-                end: p.end ?? p.finish_at ?? "",
+                lead: p.lead ?? p.lead_name ?? p.t_manager ?? "",
+                podLead: p.podLead ?? p.pod_name ?? p.pod_lead ?? "",
+                trainer: (p.trainer ?? p.employee_first_name ?? "") + (p.employee_last_name),
+                trainer_id: p.employees_id ?? p.trainer_id,
+                start: p.start ?? p.active_at ?? "",
+                end: p.end ?? p.inactive_at ?? "",
                 status: p.status ?? p.project_status ?? "",
+                staff_id: p.staffing_id
             })) : [];
             setRows(projectData);
             // derive distinct lists from projectData (support multiple possible field names)
@@ -101,7 +103,7 @@ export default function ProjectList() {
 
             const managersFromEmployees = Array.from(new Set(
                 employees
-                    .filter(e => (e.role_name || "").toLowerCase().includes("manager"))
+                    .filter(e => (e.role_name || "").toLowerCase().includes("gms manager"))
                     .map(e => e.full_name)
             )).sort();
 
@@ -114,8 +116,7 @@ export default function ProjectList() {
             // "apart from manager all in trainer" -> include every name whose role is NOT 'manager'
             const trainersFromEmployees = Array.from(new Set(
                 employees
-                    .filter(e => (e.role_name || "").toLowerCase() !== "manager")
-                    .map(e => e.full_name)
+                    .filter(e => (e.role_name || "").toLowerCase() !== "gms manager")
             )).sort();
 
             // set component lists used by selects
@@ -182,13 +183,13 @@ export default function ProjectList() {
     const onEdit = (r) => {
         setForm({ ...r }); setMode("edit"); setSubmitted(false); setShowModal(true);
     };
-    const onDelete = async (id) => {
+    const onDelete = async (r) => {
         if (!window.confirm("Delete this project?")) return;
         try {
             // call API to delete
-            await deleteProject(id);
+            await deleteProject(r.project_id, r.trainer_id);
             // update local state
-            setRows(prev => prev.filter(r => r.id !== id));
+            setRows(prev => prev.filter(row => row.staff_id !== r.staff_id));
         } catch (err) {
             console.error("Delete failed", err);
             setError("Failed to delete project");
@@ -217,10 +218,11 @@ export default function ProjectList() {
         const payload = {
             project_name: form.name,
             gms_manager: form.manager,
-            lead_name: form.lead,
-            pod_name: form.podLead,
+            t_manager: form.lead,
+            pod_lead: form.podLead,
             trainer_name: form.trainer,
-            start: form.start,
+            employees_id: form.trainer_id,
+            active_at: form.start,
             status: form.status,
             inactive_at: form.status !== "1" ? (form.end  || todayYMD) : null
         };
@@ -232,29 +234,28 @@ export default function ProjectList() {
                 
                 // prefer API returned project object; fallback to local form data
                 const created = res?.data ?? res ?? { ...form, id: form.id || `GMP${Date.now()}` , name: payload.project_name };
+                console.log("Created project", created);
                 // normalize stored shape to match rows (id, name, manager, lead, podLead, trainer, start)
                 const row = {
-                    id: created.id ?? created.project_id ?? created.project_id ?? created._id ?? created.projectId ?? created.employees_id ?? form.id,
+                    staff_id: created.id ?? created.staffing_id,
                     name: created.project_name ?? created.name ?? form.name,
                     manager: created.gms_manager ?? form.manager,
-                    lead: created.lead_name ?? form.lead,
-                    podLead: created.pod_name ?? form.podLead,
+                    lead: created.t_manager ?? form.lead,
+                    podLead: created.pod_lead ?? form.podLead,
                     trainer: created.trainer_name ?? form.trainer,
                     start: form.start
                 };
-                setRows(prev => [row, ...prev]);
+                setRows(prev => [{...form,row, staff_id: row.staff_id}, ...prev]);
             } else {
-                const res = await updateProject(form.id, payload);
+                const res = await updateProject(form.project_id, form.trainer_id, payload);
                 console.log("Update project response", res);
                 // prefer API returned project object; fallback to local form data
                 const updated = res?.data ?? res ?? payload;
-                if (updated.status === "0") {
-                    setRows(prev => prev.filter(r => r.id !== form.id));
-                }
                 setRows(prev => prev.map(r => {
-                    if (r.id === form.id) {
+                    if (r.staff_id === form.staff_id) {
                         return {
                             ...r,
+                            ...form,
                             name: updated.project_name ?? form.name,
                             manager: updated.gms_manager ?? form.manager,
                             lead: updated.lead_name ?? form.lead,
@@ -329,7 +330,7 @@ export default function ProjectList() {
                     </button>
                 </div>
 
-                <div className="card shadow-lg bg-body-tertiary rounded-3 border-3 shadow">
+                <div className="card shadow-lg rounded-3 border-3 shadow">
                     <div className="card-header bg-warning-subtle text-warning-emphasis">
                         <div className="d-flex align-items-center justify-content-between flex-wrap gap-2">
 
@@ -455,8 +456,8 @@ export default function ProjectList() {
                             </thead>
                             <tbody>
                                 {filtered.map(r => (
-                                    <tr key={r.id}>
-                                        <td className="text-muted">{r.id}</td>
+                                    <tr key={r.staff_id}>
+                                        <td className="text-muted">{r.staff_id}</td>
                                         <td className="fw-semibold">{r.name}</td>
                                         <td>{r.manager}</td>
                                         <td>{r.lead}</td>
@@ -475,7 +476,7 @@ export default function ProjectList() {
                                                 </button>
                                                 <button
                                                     className="btn btn-outline-danger btn-sm action-btn"
-                                                    onClick={() => onDelete(r.id)}
+                                                    onClick={() => onDelete(r)}
                                                     title="Delete"
                                                 >
                                                     <i className="bi bi-trash3" /><span className="label">Delete</span>
@@ -566,11 +567,20 @@ export default function ProjectList() {
                                                     <div className="col-12 col-md-6">
                                                         <label className="form-label">Trainer <span className="text-danger">*</span></label>
                                                         <SearchableSelect
-                                                            items={trainersList}
-                                                            value={form.trainer}
+                                                            items={Array.isArray(trainersList) ? trainersList : []}
                                                             valueMode="value"
-                                                            onChange={(val) => setForm({ ...form, trainer: val })}
-                                                            placeholder="Select trainer"
+                                                            valueField="employees_id"
+                                                            value={form.trainer_id}
+                                                            onChange={(id) => {
+                                                                const sel = trainersList.find(t => String(t.employees_id) === String(id));
+                                                                console.log(sel);
+                                                                
+                                                                setForm(f => ({ ...f, trainer_id: String(id), trainer: sel?.full_name || "" }));
+                                                                // onTrainerChange?.(String(id)); // if you trigger downstream fetches
+                                                            }}
+                                                            keyField="employees_id"
+                                                            labelField="full_name"
+                                                            placeholder="Select Resourse"
                                                             className={submitted && errors.trainer ? "is-invalid" : ""}
                                                         />
                                                         {submitted && errors.trainer && <div className="invalid-feedback">{errors.trainer}</div>}

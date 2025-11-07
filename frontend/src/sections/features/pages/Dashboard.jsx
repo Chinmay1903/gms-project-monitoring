@@ -12,21 +12,18 @@ export default function Dashboard() {
   const [rows, setRows] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
-  // const [managers, setManagers] = React.useState([]);
-  // const [leads, setLeads] = React.useState([]);
-  // const [podLeads, setPodLeads] = React.useState([]);
+  const [managers, setManagers] = React.useState([]);
+  const [leads, setLeads] = React.useState([]);
+  const [podLeads, setPodLeads] = React.useState([]);
 
   const [page, setPage] = React.useState(1);
   const pageSize = 6;
 
   // filters
   const [scope, setScope] = React.useState("today");
-  // const [fManager, setFManager] = React.useState("");
-  // const [fLead, setFLead] = React.useState("");
-  // const [fPod, setFPod] = React.useState("");
-  const [fManager] = React.useState("");
-  const [fLead] = React.useState("");
-  const [fPod] = React.useState("");
+  const [fManager, setFManager] = React.useState("");
+  const [fLead, setFLead] = React.useState("");
+  const [fPod, setFPod] = React.useState("");
   const [fromYMD, setFromYMD] = React.useState("");
   const [toYMD, setToYMD] = React.useState("");
   const [showInactive, setShowInactive] = React.useState(false);
@@ -68,11 +65,11 @@ export default function Dashboard() {
             : [];
           setRows(projectData);
 
-          // const uniq = (arr) =>
-          //   Array.from(new Set(arr.filter(Boolean))).sort((a, b) => a.localeCompare(b));
-          // setManagers(uniq(projectData.map((p) => p.manager)));
-          // setLeads(uniq(projectData.map((p) => p.lead)));
-          // setPodLeads(uniq(projectData.map((p) => p.pod)));
+          const uniq = (arr) =>
+            Array.from(new Set(arr.filter(Boolean))).sort((a, b) => a.localeCompare(b));
+          setManagers(uniq(projectData.map((p) => p.manager)));
+          setLeads(uniq(projectData.map((p) => p.lead)));
+          setPodLeads(uniq(projectData.map((p) => p.pod)));
         } else {
           setError(dashRes.message || "Failed to load dashboard data");
         }
@@ -93,12 +90,9 @@ export default function Dashboard() {
   }, [today]);
 
   // reset page when filters/data change
-  // React.useEffect(() => {
-  //   setPage(1);
-  // }, [scope, fManager, fLead, fPod, fromYMD, toYMD, rows, selectedProject, showInactive]); // [UPDATED] include showInactive
-    React.useEffect(() => {
-      setPage(1);
-    }, [scope, fromYMD, toYMD, rows, selectedProject, showInactive]);
+  React.useEffect(() => {
+    setPage(1);
+  }, [scope, fManager, fLead, fPod, fromYMD, toYMD, rows, selectedProject, showInactive]); // [UPDATED] include showInactive
 
   // date chip handlers
   const setToday = () => { setScope("today"); setFromYMD(today); setToYMD(today); };

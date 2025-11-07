@@ -44,7 +44,7 @@ export default function ResourceList() {
                     qualification: emp.qualification,
                     state: emp.state,
                     city: emp.city,
-                    start: emp.create_at?.split(' ')[0] || '', // Take only the date part
+                    start: emp.active_at?.split(' ')[0] || '', // Take only the date part
                     end: emp.inactive_at || "",  // [NEW] end date field
                     status: String(emp.status ?? "1"),
                 }));
@@ -163,6 +163,7 @@ export default function ResourceList() {
         const nameParts = form.name.split(' ');
         const lastName = nameParts.length > 1 ? nameParts.pop() : ''; // Get last word
         const firstName = nameParts.join(' '); // Join remaining words
+        const roleName = roles.find(r => r.role_id === form.role)?.role_name || "";
         try {
             if (mode === "add") {
                 const response = await addEmployee({
@@ -170,23 +171,21 @@ export default function ResourceList() {
                     first_name: firstName,
                     last_name: lastName,
                     role: form.role,
-                    role_name: roles.find(r => r.role_id === form.role)?.role_name || "",
                     gender: form.gender,
                     email: form.email,
                     phone: form.mobile,
                     designation: form.designation,
                     skill: form.skill,
-                    experience: form.exp,
+                    experience: parseFloat(form.exp),
                     qualification: form.qualification,
                     state: form.state,
                     city: form.city,
                     status: "1",
-                    create_at: form.start,
-                    inactive_at: form.end || null  // [NEW] end date field
+                    active_at: form.start,
                 });
 
                 if (response.data) {
-                    setRows(prev => [{ ...form }, ...prev]);
+                    setRows(prev => [{ ...form, roleName: roleName}, ...prev]);
                     setShowModal(false);
                 }
             } else {
@@ -199,7 +198,7 @@ export default function ResourceList() {
                     phone: form.mobile,
                     designation: form.designation,
                     skill: form.skill,
-                    experience: form.exp,
+                    experience: parseFloat(form.exp),
                     qualification: form.qualification,
                     state: form.state,
                     city: form.city,
@@ -208,7 +207,7 @@ export default function ResourceList() {
                 });
 
                 if (response.data) {
-                    setRows(prev => prev.map(r => r.id === form.id ? { ...r, ...form } : r));
+                    setRows(prev => prev.map(r => r.id === form.id ? { ...r, ...form, roleName: roleName } : r));
                     setShowModal(false);
                 }
             }
@@ -253,6 +252,19 @@ export default function ResourceList() {
         }
     }, [showInactive, sortKey]);
 
+    const getFullGender = (g) => {
+        if (g === "M") {
+            return "Male"
+        } else if (g === "F") {
+            return "Female"
+        } else if (g === "O") {
+            return "Other"
+        } else {
+            return "-"
+        }
+    } 
+
+
     // ---------- header cell ----------
     const Th = ({ label, k }) => {
         const active = sortKey === k;
@@ -288,10 +300,10 @@ export default function ResourceList() {
     const normalize = (s) => s?.replace("T", " ").replace("Z", "") || "";
 
     // Display Date as DD-MM-YYYY
-    // const toYMD = (ymd) => {
-    //     ymd =normalize(ymd);
-    //     return ymd ? ymd.slice(0, 10) : "";
-    // };
+    const toYMD = (ymd) => {
+        ymd =normalize(ymd);
+        return ymd ? ymd.slice(0, 10) : "";
+    };
     const toDMY = (dmy) => {
         dmy = normalize(dmy);
         if (!dmy) return "";
@@ -329,7 +341,7 @@ export default function ResourceList() {
                                         <button
                                             key={role}
                                             type="button"
-                                        className={`btn btn-sm btn-outline-primary ${roleTab === role ? "active" : ""}`}
+                                        className={`btn btn-sm ${roleTab === role ? "btn-outline-primary active" : "btn-outline-secondary"}`}
                                             aria-pressed={roleTab === role}
                                         onClick={() => setRoleTab(role)}>
                                         {role === "All" ? "All" : `${role}s`}
@@ -382,12 +394,12 @@ export default function ResourceList() {
                                         <td className="text-muted">{r.id}</td>
                                         <td className="fw-semibold">{r.name}</td>
                                         <td>{r.roleName}</td>
-                                        <td>{r.gender || "-"}</td>
+                                        <td>{getFullGender(r.gender)}</td>
                                         <td><span className="text-break d-inline-block" style={{ maxWidth: 220 }}>{r.email}</span></td>
                                         <td>{r.mobile}</td>
                                         <td>{r.designation}</td>
                                         <td>{r.skill}</td>
-                                        <td>{r.exp}</td>
+                                        <td>{r.exp} {parseFloat(r.exp) > 1 ? "years" : "year"}</td>
                                         <td>{toDMY(r.start)}</td>
                                         {showInactive && <td>{toDMY(r.end) || "-"}</td>}
                                         <td className="actions-col">
@@ -465,9 +477,9 @@ export default function ResourceList() {
                                                             value={form.gender}
                                                             onChange={e => setForm({ ...form, gender: e.target.value })}>
                                                             <option value="">Select gender</option>
-                                                            <option value="Female">Female</option>
-                                                            <option value="Male">Male</option>
-                                                            <option value="Other">Other</option>
+                                                            <option value="F">Female</option>
+                                                            <option value="M">Male</option>
+                                                            <option value="O">Other</option>
                                                         </select>
                                                         {submitted && errors.gender && <div className="invalid-feedback">{errors.gender}</div>}
                                                     </div>
@@ -582,6 +594,7 @@ export default function ResourceList() {
                                                                 <label className="form-label">Inactive Date</label>
                                                                 <input
                                                                     type="date"
+                                                                    min={form.start}
                                                                     className={`form-control ${submitted && errors.end ? "is-invalid" : ""}`}
                                                                     value={form.end}
                                                                     onChange={(e) => setForm({ ...form, end: e.target.value, status: "0" })}

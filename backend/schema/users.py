@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from datetime import datetime
 
 ## Models for User Table
 class UserList(BaseModel):
@@ -8,8 +9,9 @@ class UserList(BaseModel):
     first_name: str
     last_name : str
     gender    : str
-    create_at : str
     status    : str
+    created_at : datetime
+    updated_at : datetime
 class UserEntry(BaseModel):
     username  : str = Field(..., example="potinejj")
     password  : str = Field(..., example="potinejj")
@@ -18,7 +20,6 @@ class UserEntry(BaseModel):
     gender    : str = Field(..., example="M")
     status    : str = Field(..., example="1 or 0")
 class UserUpdate(BaseModel):
-    id        : str = Field(..., example="Enter your id")
     first_name: str = Field(..., example="Potine")
     last_name : str = Field(..., example="Sambo")
     gender    : str = Field(..., example="M")

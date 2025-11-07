@@ -20,7 +20,7 @@ export default function AppHeader({
     const wrapRef = useRef(null);
 
     const toggleMenu = () => setOpen((v) => !v);
-    // const closeMenu = () => setOpen(false);
+    const closeMenu = () => setOpen(false);
 
     // close on outside click
     useEffect(() => {

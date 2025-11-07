@@ -27,7 +27,7 @@ export const getEmployees = async () => {
 };
 
 export const getEmployeeNames = async () => {
-  const res = await http.get("/employees_names");
+  const res = await http.get("/employees/names");
   console.log(res);
 
   const data = res?.data;
@@ -100,8 +100,8 @@ export const addProject = async (project) => {
   };
 };
 
-export const updateProject = async (id, project) => {
-  const res = await http.put(`/projects/${id}`, project);
+export const updateProject = async (project_id, trainer_id, project) => {
+  const res = await http.put(`/projects/${project_id}/${trainer_id}`, project);
   console.log(res);
   const data = res?.data;
   const ok = res.status === 200 && data?.message === "Project updated successfully";
@@ -112,8 +112,8 @@ export const updateProject = async (id, project) => {
   };
 };
 
-export const deleteProject = async (id) => {
-  const res = await http.delete(`/projects/${id}`);
+export const deleteProject = async (project_id, trainer_id) => {
+  const res = await http.delete(`/projects/${project_id}/${trainer_id}`);
   console.log(res);
   const data = res?.data;
   const ok = res.status === 200 && data?.message === "Project deleted successfully";

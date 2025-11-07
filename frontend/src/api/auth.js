@@ -2,7 +2,7 @@ import http from "./client";
 
 // ✅ Named export (what your page imports)
 export const loginApi = async ({ username, password }) => {
-  const res = await http.post("/login", { username, password });
+  const res = await http.post("users/login", { username, password });
   console.log(res);
   
   const data = res?.data;

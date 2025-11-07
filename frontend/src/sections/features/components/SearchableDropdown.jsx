@@ -115,7 +115,6 @@ export default function SearchableDropdown({
       className={`sd-root ${className}`}
       ref={rootRef}
       onKeyDown={onKeyDown}
-      aria-controls="dropdown-list"
       aria-haspopup="listbox"
       aria-expanded={open ? "true" : "false"}
       role="combobox"
@@ -161,7 +160,6 @@ export default function SearchableDropdown({
             className="sd-list list-unstyled mb-0"
             role="listbox"
             style={{ maxHeight: maxMenuHeight, overflow: "auto" }}
-            aria-controls="dropdown-list"
           >
             {filtered.length === 0 && (
               <li className="sd-empty text-muted py-3 text-center">No results</li>
