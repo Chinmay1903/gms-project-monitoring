@@ -6,7 +6,6 @@ from fastapi import HTTPException, status
 from passlib.context import CryptContext
 
  
-# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 ## End Point for User table
