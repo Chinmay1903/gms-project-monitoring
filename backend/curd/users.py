@@ -5,7 +5,7 @@ from sqlalchemy import select
 from fastapi import HTTPException
 from passlib.context import CryptContext
  
-pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 ## End Point for User table
