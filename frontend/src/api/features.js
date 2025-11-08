@@ -172,6 +172,18 @@ export const updateTask = async (id, task) => {
   };
 };
 
+export const deleteTask = async (id) => {
+  const res = await http.delete(`/tasks/${id}`);
+  console.log(res);
+  const data = res?.data;
+  const ok = res.status === 200;
+  return {
+    ok,
+    message: data?.message || (ok ? "Task deleted successfully" : "Failed to delete task"),
+    data: data,
+  };
+};
+
 export const dashboardData = async (id) => {
   const res = await http.get(`dashboard/summary`);
   console.log(res);
