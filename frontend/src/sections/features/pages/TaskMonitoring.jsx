@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import AppLayout from "../components/AppLayout";
 import "./TaskMonitoring.css";
-import { getTasks, getEmployeeNames, getProjectNamesByEmployeeID, addTask, updateTask } from "../../../api/features";
+import { getTasks, getEmployeeNames, getProjectNamesByEmployeeID, addTask, updateTask, deleteTask } from "../../../api/features";
 import SearchableSelect from "../components/SearchableSelect";
 
 import {
@@ -14,7 +14,7 @@ export default function TaskMonitoring() {
   /* ----------------------------- small helpers ----------------------------- */
   const Th = ({ label, k, sortKey, sortDir, onSort }) => {
     const active = sortKey === k;
-    console.log(sortDir);
+    // console.log(sortDir);
     
     const icon = active ? (sortDir === "asc" ? "bi-arrow-up text-primary" : "bi-arrow-down text-primary") : "bi-arrow-down-up";
     return (
@@ -26,45 +26,13 @@ export default function TaskMonitoring() {
     );
   };
   const toYMD = (d) => (d instanceof Date ? d.toISOString().slice(0, 10) : d);
+  const toDMY = (ymd) => {
+    const [y, m, d] = ymd.split("-");
+    return (d && m && y) ? `${d}-${m}-${y}` : ymd;
+  };
   const today = toYMD(new Date());
 
-  /* -------------------------------- seed data ------------------------------ */
-  // Expanded sample worklog data — September 2025
-  const seed = [
-    { id: "t1", date: "2025-09-29", trainerId: "GMS101", trainer: "Asha Kumar", project: "Inventory Revamp", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 6, taskCompleted: 6, reworked: 2, inProgress: 2, approved: 2, rejected: 0, reviewed: 0 },
-    { id: "t2", date: "2025-09-29", trainerId: "GMS101", trainer: "Asha Kumar", project: "Partner Portal", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 3, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 1 },
-    { id: "t3", date: "2025-09-29", trainerId: "GMS102", trainer: "Rahul Shah", project: "Billing Migration", manager: "N. Gupta", lead: "P. Mehta", podLead: "M. Iyer", hours: 5, taskCompleted: 4, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-
-    // near month end for "week"
-    { id: "t4", date: "2025-09-28", trainerId: "GMS102", trainer: "Rahul Shah", project: "Fraud Engine", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 6, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 1, reviewed: 0 },
-    { id: "t5", date: "2025-09-27", trainerId: "GMS101", trainer: "Asha Kumar", project: "Partner Portal", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 3, taskCompleted: 2, reworked: 0, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t6", date: "2025-09-26", trainerId: "GMS103", trainer: "Ishita Bose", project: "Data Lake ETL", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 7, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 1 },
-
-    // spread across the month
-    { id: "t7", date: "2025-09-02", trainerId: "GMS101", trainer: "Asha Kumar", project: "Inventory Revamp", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 7, taskCompleted: 5, reworked: 2, inProgress: 2, approved: 2, rejected: 0, reviewed: 0 },
-    { id: "t8", date: "2025-09-03", trainerId: "GMS101", trainer: "Asha Kumar", project: "Mobile App v3", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 8, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 1 },
-    { id: "t9", date: "2025-09-05", trainerId: "GMS102", trainer: "Rahul Shah", project: "Billing Migration", manager: "N. Gupta", lead: "P. Mehta", podLead: "M. Iyer", hours: 4, taskCompleted: 4, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t10", date: "2025-09-06", trainerId: "GMS102", trainer: "Rahul Shah", project: "Fraud Engine", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 6, taskCompleted: 2, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t11", date: "2025-09-08", trainerId: "GMS103", trainer: "Ishita Bose", project: "Mobile App v3", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 6, taskCompleted: 2, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t12", date: "2025-09-10", trainerId: "GMS103", trainer: "Ishita Bose", project: "Data Lake ETL", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 7, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 1, reviewed: 0 },
-    { id: "t13", date: "2025-09-12", trainerId: "GMS101", trainer: "Asha Kumar", project: "Partner Portal", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 2, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t14", date: "2025-09-15", trainerId: "GMS101", trainer: "Asha Kumar", project: "Inventory Revamp", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 6, taskCompleted: 5, reworked: 1, inProgress: 2, approved: 2, rejected: 0, reviewed: 1 },
-    { id: "t15", date: "2025-09-16", trainerId: "GMS102", trainer: "Rahul Shah", project: "Billing Migration", manager: "N. Gupta", lead: "P. Mehta", podLead: "M. Iyer", hours: 5, taskCompleted: 4, reworked: 0, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t16", date: "2025-09-18", trainerId: "GMS103", trainer: "Ishita Bose", project: "Data Lake ETL", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 6, taskCompleted: 2, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t17", date: "2025-09-20", trainerId: "GMS102", trainer: "Rahul Shah", project: "Fraud Engine", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 6, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 1 },
-    { id: "t18", date: "2025-09-22", trainerId: "GMS101", trainer: "Asha Kumar", project: "Mobile App v3", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 7, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t19", date: "2025-09-24", trainerId: "GMS103", trainer: "Ishita Bose", project: "Mobile App v3", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 4, taskCompleted: 2, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t20", date: "2025-09-25", trainerId: "GMS102", trainer: "Rahul Shah", project: "Billing Migration", manager: "N. Gupta", lead: "P. Mehta", podLead: "M. Iyer", hours: 5, taskCompleted: 4, reworked: 1, inProgress: 1, approved: 1, rejected: 1, reviewed: 0 },
-
-    // extra mid-month coverage
-    { id: "t21", date: "2025-09-11", trainerId: "GMS101", trainer: "Asha Kumar", project: "Inventory Revamp", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 6, taskCompleted: 4, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t22", date: "2025-09-13", trainerId: "GMS102", trainer: "Rahul Shah", project: "Fraud Engine", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 0, taskCompleted: 2, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t23", date: "2025-09-19", trainerId: "GMS101", trainer: "Asha Kumar", project: "Partner Portal", manager: "N. Gupta", lead: "S. Rao", podLead: "M. Iyer", hours: 3, taskCompleted: 2, reworked: 0, inProgress: 1, approved: 1, rejected: 0, reviewed: 0 },
-    { id: "t24", date: "2025-09-21", trainerId: "GMS103", trainer: "Ishita Bose", project: "Data Lake ETL", manager: "L. Kulkarni", lead: "A. Verma", podLead: "Z. Khan", hours: 7, taskCompleted: 3, reworked: 1, inProgress: 1, approved: 1, rejected: 0, reviewed: 1 },
-  ];
-
-
-  const [rows, setRows] = useState(seed);
+  const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [trainers, setTrainers] = useState([]); // {id, name, projects:[{project, manager, lead, podLead}]}
@@ -103,7 +71,7 @@ export default function TaskMonitoring() {
 
   /* ---------------------------- modal state/logic ---------------------------- */
   const emptyForm = {
-    id: 0, date: today, trainerId: "", trainer: "", project_id: 0,
+    id: 0, date: "", trainerId: "", trainer: "", project_id: 0,
     project: "", manager: "", lead: "", podLead: "",
     hours: "", overtime: false, taskCompleted: 0, reworked: 0, inProgress: 0, approved: 0, rejected: 0, reviewed: 0
   };
@@ -118,13 +86,13 @@ export default function TaskMonitoring() {
       setError(null);
       try {
         const [taskRes, namesRes] = await Promise.all([getTasks(), getEmployeeNames()]);
-        // tasks              
+        // tasks            
         const taskData = Array.isArray(taskRes?.data) ? taskRes.data.map(t => ({
           ...emptyForm,
           id: Number(t.task_id || 0),
-          date: t.date || today,
+          date: t.task_date || today,
           trainerId: t.employees_id || "",
-          trainer: t.trainer_name || "",
+          trainer: t.first_name + t.last_name || "",
           project_id: Number(t.project_id || 0),
           project: t.project_name || "",
           manager: t.manager || "",
@@ -133,16 +101,16 @@ export default function TaskMonitoring() {
           hours: Number(t.hours_logged || 0),
           inProgress: Number(t.task_inprogress || 0),
           taskCompleted: Number(t.task_completed || 0),
-          reworked: Number(t.reworked || 0),
+          reworked: Number(t.task_reworked || 0),
           approved: Number(t.task_approved || 0),
-          rejected: Number(t.rejected || 0),
-          reviewed: Number(t.reviewed || 0),
+          rejected: Number(t.task_rejected || 0),
+          reviewed: Number(t.task_reviewed || 0),
         })) : [];
         // employee names
-        console.log("Loaded tasks:", taskData);
+        // console.log("Loaded tasks:", taskData);
         setRows(taskData);
         setTrainers(Array.isArray(namesRes?.data) ? namesRes.data : []);
-        console.log("Loaded employee names:", trainers, typeof trainers);
+        // console.log("Loaded employee names:", trainers, typeof trainers);
         
       } catch (err) {
         console.error("Failed loading tasks or employee names", err);
@@ -169,12 +137,13 @@ export default function TaskMonitoring() {
     const firstId = String(trainerProjects[0].project_id);
     onProjectChange(firstId);                     // ← programmatically trigger
   }
-}, [form.trainerId, loadingProjects, trainerProjects]);
+}, [form.trainerId, loadingProjects, trainerProjects, form.project_id,]);
 
   const normalize = (f) => ({
+    id: f.id || null,
     date: f.date || today,
     trainerId: f.trainerId || "",
-    trainer: f.trainer || "",
+    trainer: f.first_name + f.last_name || "",
     project: f.project || "",
     manager: f.manager || "",
     lead: f.lead || "",
@@ -197,67 +166,78 @@ export default function TaskMonitoring() {
   };
 
   const onEdit = (r) => {
-    setMode("edit");
+    setMode("edit");    
     setForm(normalize({ ...r }));
-    loadProjectsForTrainer(r.trainer);
+    loadProjectsForTrainer(r.trainerId);
     setSubmitted(false);
     setShowModal(true);
   };
 
-  const onDelete = (id) => {
+  const onDelete = async (id) => {
     if (window.confirm("Delete this entry?")) {
-      setRows(prev => prev.filter(r => r.id !== id));
+      const res = await deleteTask(id);
+      if (res.ok) {
+        setRows(prev => prev.filter(r => r.id !== id));
+      } else {
+        alert(res.message);
+      }
     }
   };
 
   const loadProjectsForTrainer = async (trainerId) => {
     if (!trainerId) {
       setTrainerProjects([]);
-      return;
+      return [];
     }
     setLoadingProjects(true);
+
     const res = await getProjectNamesByEmployeeID(trainerId);
-    if (res.ok) {
-      setTrainerProjects(res.data || []);
-    } else {
-      console.error("Failed to load projects", res.message);
-      setTrainerProjects([]);
-    }
+
+    // <-- normalize every record to unified keys
+    const normalizeProject = (p) => ({
+      project_id: Number(p.project_id ?? p.id ?? 0),
+      project_name: p.project_name ?? p.name ?? "",
+      gms_manager: p.gms_manager ?? p.manager ?? "",
+      lead_name: p.lead_name ?? p.t_manager ?? p.lead ?? "",
+      pod_name: p.pod_name ?? p.pod_lead ?? p.pod ?? "",
+    });
+
+    const items = res.ok ? (res.data || []).map(normalizeProject) : [];
+    setTrainerProjects(items);
     setLoadingProjects(false);
+    return items; // <-- important: return normalized list for immediate use
   };
 
   // When trainer changes → set id and clear project chain
   const onTrainerChange = async (trainerId) => {
-    console.log("Selected trainer:", trainerId, typeof trainerId);
-    
     const t = trainers.find(x => x.employees_id === trainerId);
-    await loadProjectsForTrainer(t.full_name);
+    const items = await loadProjectsForTrainer(trainerId); // use returned normalized projects
+    const first = items[0];
+
     setForm(f => ({
       ...f,
       trainerId,
       trainer: t ? t.full_name : "",
-      project_id: trainerProjects.length >= 1 ? trainerProjects[0].project_id : 0,
-      project: trainerProjects.length >= 1 ? trainerProjects[0].project_name : "",
-      manager: trainerProjects.length >= 1 ? trainerProjects[0].gms_manager : "",
-      lead: trainerProjects.length >= 1 ? trainerProjects[0].lead_name : "",
-      podLead: trainerProjects.length >= 1 ? trainerProjects[0].pod_name : ""
+      project_id: first?.project_id ?? "",
+      project: first?.project_name ?? "",
+      manager: first?.gms_manager ?? "",
+      lead: first?.lead_name ?? "",
+      podLead: first?.pod_name ?? "",
     }));
-    console.log("Form after trainer change:", form, trainerProjects);
+    // console.log("Form after trainer change:", form, trainerProjects);
     
   };
 
   // When project changes → set manager/lead/pod
   const onProjectChange = (projectId) => {
-    const found = trainerProjects.find(p => p.project_id === Number(projectId));
-    console.log("Selected project:", projectId, typeof projectId, found);
-
+    const found = trainerProjects.find(p => String(p.project_id) === String(projectId));
     setForm(f => ({
       ...f,
-      project_id: projectId,
-      project: found?.project_name || "",
-      manager: found?.gms_manager || "",
-      lead: found?.lead_name || "",
-      podLead: found?.pod_name || ""
+      project_id: Number(projectId),
+      project:  found?.project_name || "",
+      manager:  found?.gms_manager || found?.manager || "",
+      lead:     found?.lead_name   || found?.t_manager || found?.lead || "",
+      podLead:  found?.pod_name    || found?.pod_lead  || found?.pod  || "",
     }));
   };
 
@@ -302,7 +282,7 @@ export default function TaskMonitoring() {
     const payload = {
       employees_id: form.trainerId,
       project_id: form.project_id,
-      date: form.date || today,
+      task_date: form.date || today,
       task_completed: Number(form.taskCompleted || 0),
       task_inprogress: Number(form.inProgress || 0),
       task_reworked: Number(form.reworked || 0),
@@ -314,17 +294,16 @@ export default function TaskMonitoring() {
 
     // create/update
     if (mode === "add") {
-      console.log(payload);
       const id = "t" + Math.random().toString(36).slice(2, 8);
       const res = await addTask(payload);
-      console.log("Add task response:", res);
+      // console.log("Add task response:", res);
 
       const created = res.data ?? res ?? { ...form, id: id || `GMP${Date.now()}`, name: payload.project_name };
       const row = {
         id: Number(created.task_id),
         date: created.date || today,
         trainerId: created.employees_id || "",
-        trainer: created.trainer_name || "",
+        trainer: created.first_name + " " + created.last_name || "",
         project_id: Number(created.project_id || 0),
         project: created.project_name || "",
         manager: created.manager || "",
@@ -333,15 +312,15 @@ export default function TaskMonitoring() {
         hours: Number(created.hours_logged || 0),
         inProgress: Number(created.task_inprogress || 0),
         taskCompleted: Number(created.task_completed || 0),
-        reworked: Number(created.reworked || 0),
-        approved: Number(created.task_approved || 0),
-        rejected: Number(created.rejected || 0),
-        reviewed: Number(created.reviewed || 0),
+        reworked: Number(created.task_reworked || 0),
+        approved: Number(created.task_task_approved || 0),
+        rejected: Number(created.task_rejected || 0),
+        reviewed: Number(created.task_reviewed || 0),
       };
       setRows(prev => [row, ...prev]);
-    } else {
+    } else {           
       const res = await updateTask(form.id, payload);
-      console.log("Update task response:", res);
+      // console.log("Update task response:", res);
 
       const updated = res?.data ?? res ?? payload;
       setRows(prev => prev.map(r => r.id === form.id
@@ -349,7 +328,7 @@ export default function TaskMonitoring() {
           ...form,
           date: updated.date || today,
           trainerId: updated.employees_id || "",
-          trainer: updated.trainer_name || "",
+          trainer: updated.first_name + " " + updated.last_name || "",
           project_id: Number(updated.project_id || 0),
           project: updated.project_name || "",
           manager: updated.manager || "",
@@ -358,10 +337,10 @@ export default function TaskMonitoring() {
           hours: Number(updated.hours_logged || 0),
           inProgress: Number(updated.task_inprogress || 0),
           taskCompleted: Number(updated.task_completed || 0),
-          reworked: Number(updated.reworked || 0),
+          reworked: Number(updated.task_reworked || 0),
           approved: Number(updated.task_approved || 0),
-          rejected: Number(updated.rejected || 0),
-          reviewed: Number(updated.reviewed || 0),
+          rejected: Number(updated.task_rejected || 0),
+          reviewed: Number(updated.task_reviewed || 0),
         }
         : r
       ));
@@ -398,7 +377,7 @@ export default function TaskMonitoring() {
     baseRows.forEach(r => { map[r.date] = (map[r.date] || 0) + Number(r.hours || 0); });
     const days = Object.keys(map).sort();
     const hoursSeries = days.map(d => ({ date: new Date(d).toLocaleDateString("en-US", { month: "short", day: "2-digit" }), hours: map[d] }));
-    console.log("Hours series:", hoursSeries);
+    // console.log("Hours series:", hoursSeries);
 
     return { total, hoursSeries };
   }, [baseRows]);
@@ -458,7 +437,7 @@ export default function TaskMonitoring() {
                 {["day", "week", "month", "overall"].map(r => (
                   <button
                     key={r}
-                    className={"btn btn-outline-secondary btn-sm " + (range === r ? "active" : "")}
+                    className={"btn btn-outline-primary btn-sm " + (range === r ? "active" : "")}
                     onClick={() => setRange(r)}
                     type="button"
                   >
@@ -497,7 +476,7 @@ export default function TaskMonitoring() {
               <tbody>
                 {baseRows.map(r => (
                   <tr key={r.id}>
-                    <td>{r.date}</td>
+                    <td>{toDMY(r.date)}</td>
                     <td>
                       <a href="#0" className="name-link" onClick={() => setView({ type: "trainer", trainerId: r.trainerId, name: r.trainer })}>
                         {r.trainer}
@@ -668,7 +647,7 @@ export default function TaskMonitoring() {
                             <input
                               type="date"
                               className={`form-control ${submitted && errors.date ? "is-invalid" : ""}`}
-                              value={form.date}
+                              value={form.date === "" ? today : form.date}
                               onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                             />
                             {submitted && errors.date && <div className="invalid-feedback">{errors.date}</div>}

@@ -558,6 +558,7 @@ export default function ResourceList() {
                                                             <label className="form-label">Start Date <span className="text-danger">*</span></label>
                                                             <div className="d-flex align-items-center gap-2">
                                                                 <input type="date"
+                                                                    max={todayYMD}
                                                                     className={`form-control ${submitted && errors.start ? "is-invalid" : ""}`}
                                                                     value={form.start}
                                                                     onChange={(e) => setForm({ ...form, start: e.target.value })} />

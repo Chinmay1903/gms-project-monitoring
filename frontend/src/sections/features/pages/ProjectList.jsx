@@ -630,6 +630,7 @@ export default function ProjectList() {
                                                                 <label className="form-label">Inactive Date</label>
                                                                 <input
                                                                     type="date"
+                                                                    min={form.start}
                                                                     className={`form-control ${submitted && errors.end ? "is-invalid" : ""}`}
                                                                     value={form.end}
                                                                     onChange={(e) => setForm({ ...form, end: e.target.value, status: "0" })}

@@ -8,11 +8,11 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/projects", tags=["Project Details"])
 
-# Get projects by Trainer Name
-@router.get("/trainer/{trainer_name}")
-async def get_projects_by_trainer(trainer_name: str):
+# Get projects by Trainer ID
+@router.get("/trainer/{trainer_id}")
+async def get_projects_by_trainer(trainer_id: str):
     try:
-        return await ProjectsCurdOperation.get_projects_by_trainer(trainer_name)
+        return await ProjectsCurdOperation.get_projects_for_trainer(trainer_id)
     except HTTPException:
         raise
     except Exception as exc:

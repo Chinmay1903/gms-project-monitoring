@@ -449,7 +449,15 @@ class ProjectsCurdOperation:
     @staticmethod
     async def get_projects_for_trainer(trainer_id: str, limit: int = default_limit, offset: int = default_offset, is_active: bool = False) -> List[Projects]:
         try:
-            query = sqlalchemy.select(projects).select_from(projects.join(project_staffing, project_staffing.c.project_id == projects.c.project_id)
+            query = sqlalchemy.select(projects, 
+                                      project_staffing.c.id.label("staffing_id"),
+                                      project_staffing.c.employees_id,
+                                      project_staffing.c.gms_manager,
+                                      project_staffing.c.t_manager,
+                                      project_staffing.c.pod_lead,
+                                      project_staffing.c.created_at.label("staffing_created_at"),
+                                      project_staffing.c.updated_at.label("staffing_updated_at")
+                                      ).select_from(projects.join(project_staffing, project_staffing.c.project_id == projects.c.project_id)
                                                             ).where(project_staffing.c.employees_id == trainer_id).limit(limit).offset(offset).where(projects.c.status == '1' if is_active else True)
             res = await database.fetch_all(query)
             return res
