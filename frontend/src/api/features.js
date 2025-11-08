@@ -149,7 +149,7 @@ export const getTasks = async () => {
 };
 
 export const addTask = async (task) => {
-  const res = await http.post("/task", task);
+  const res = await http.post("/tasks", task);
   console.log(res);
   const data = res?.data;
   const ok = res.status === 200 && data?.message === "Task added successfully";
@@ -161,7 +161,7 @@ export const addTask = async (task) => {
 };
 
 export const updateTask = async (id, task) => {
-  const res = await http.put(`/task/${id}`, task);
+  const res = await http.put(`/tasks/${id}`, task);
   console.log(res);
   const data = res?.data;
   const ok = res.status === 200 && data?.message === "Task updated successfully";
