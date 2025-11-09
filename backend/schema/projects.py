@@ -7,8 +7,8 @@ StatusFlag   = Literal['0', '1']
 ## Models for Projects Table
 class Projects(BaseModel):
     project_id    : int              = Field(..., description="Unique identifier for the project")
-    project_name  : str              = Field(..., description="Name of the project")
-    active_at     : date             = Field(..., description="Date when the project became active")
+    project_name  : Optional[str]    = Field(..., description="Name of the project")
+    active_at     : Optional[date]   = Field(..., description="Date when the project became active")
     inactive_at   : Optional[date]   = Field(None, description="Date when the project became inactive")
     status        : StatusFlag       = Field(..., description="Status of the project: '1' active, '0' inactive")
     created_at    : datetime         = Field(..., description="Timestamp when the project record was created")
@@ -16,12 +16,12 @@ class Projects(BaseModel):
 
 class ProjectsWithTrainer(Projects):
     staffing_id         : int = Field(..., description="Unique identifier for the trainer project")
-    employees_id         : str = Field(..., description="Unique identifier for the employee")
-    employee_first_name : str = Field(..., description="First name of the employee")
-    employee_last_name  : str = Field(..., description="Last name of the employee")
-    gms_manager         : str = Field(..., description="GMS Manager")
-    t_manager           : str = Field(..., description="Turing Manager")
-    pod_lead            : str = Field(..., description="POD Lead")
+    employees_id        : str = Field(..., description="Unique identifier for the employee")
+    employee_first_name : Optional[str] = Field(..., description="First name of the employee")
+    employee_last_name  : Optional[str] = Field(..., description="Last name of the employee")
+    gms_manager         : Optional[str] = Field(..., description="GMS Manager")
+    t_manager           : Optional[str] = Field(..., description="Turing Manager")
+    pod_lead            : Optional[str] = Field(..., description="POD Lead")
     staffing_created_at : datetime = Field(..., description="Timestamp when the trainer is added to the project")
     staffing_updated_at : datetime = Field(..., description="Timestamp when the trainer is last updated to the project")
 
