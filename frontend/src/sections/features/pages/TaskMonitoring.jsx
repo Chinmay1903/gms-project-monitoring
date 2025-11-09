@@ -290,9 +290,7 @@ export default function TaskMonitoring() {
       task_rejected: Number(form.rejected || 0),
       task_reviewed: Number(form.reviewed || 0),
       hours_logged: Number(form.hours || 0),
-    };
-
-    console.log(payload);    
+    };  
 
     // create/update
     if (mode === "add") {
