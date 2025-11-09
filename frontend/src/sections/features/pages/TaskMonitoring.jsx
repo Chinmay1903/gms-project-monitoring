@@ -303,7 +303,7 @@ export default function TaskMonitoring() {
       const created = res.data ?? res ?? { ...form, id: id || `GMP${Date.now()}`, name: payload.project_name };
       const row = {
         id: Number(created.task_id),
-        date: created.date || today,
+        date: created.task_date,
         trainerId: created.employees_id || "",
         trainer: created.first_name + " " + created.last_name || "",
         project_id: Number(created.project_id || 0),
@@ -328,7 +328,7 @@ export default function TaskMonitoring() {
       setRows(prev => prev.map(r => r.id === form.id
         ? {
           ...form,
-          date: updated.date || today,
+          date: updated.task_date,
           trainerId: updated.employees_id || "",
           trainer: updated.first_name + " " + updated.last_name || "",
           project_id: Number(updated.project_id || 0),
