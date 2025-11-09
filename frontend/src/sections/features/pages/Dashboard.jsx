@@ -20,7 +20,7 @@ export default function Dashboard() {
   const pageSize = 6;
 
   // filters
-  const [scope, setScope] = React.useState("today");
+  const [scope, setScope] = React.useState("overall");
   const [fManager, setFManager] = React.useState("");
   const [fLead, setFLead] = React.useState("");
   const [fPod, setFPod] = React.useState("");
@@ -83,9 +83,9 @@ export default function Dashboard() {
     loadData();
 
     // default to Today
-    setScope("today");
-    setFromYMD(today);
-    setToYMD(today);
+    setScope("overall");
+    setFromYMD("");
+    setToYMD("");
     setPage(1);
   }, [today]);
 
@@ -223,10 +223,10 @@ export default function Dashboard() {
 
               <div className="d-flex flex-wrap align-items-center justify-content-between gap-2" style={{ width: "95%" }}>
                 <div className="btn-group pm-chip-group" role="group" aria-label="range">
+                  <button className={`btn btn-sm ${scope === "overall" ? "active" : ""}`} onClick={setOverall}>Overall</button>
                   <button className={`btn btn-sm ${scope === "today" ? "active" : ""}`} onClick={setToday}>Today</button>
                   <button className={`btn btn-sm ${scope === "week" ? "active" : ""}`} onClick={setWeek}>Week</button>
                   <button className={`btn btn-sm ${scope === "month" ? "active" : ""}`} onClick={setMonth}>Month</button>
-                  <button className={`btn btn-sm ${scope === "overall" ? "active" : ""}`} onClick={setOverall}>Overall</button>
                 </div>
 
                 <div className="form-check form-switch d-flex align-items-center me-2">
