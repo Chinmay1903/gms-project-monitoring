@@ -292,6 +292,8 @@ export default function TaskMonitoring() {
       hours_logged: Number(form.hours || 0),
     };
 
+    console.log(payload);    
+
     // create/update
     if (mode === "add") {
       const id = "t" + Math.random().toString(36).slice(2, 8);
