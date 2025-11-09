@@ -27,22 +27,22 @@ class ProjectsWithTrainer(Projects):
 
 class ProjectsAdd(BaseModel):
     project_name  : constr(strip_whitespace=True, min_length=1, max_length=255) = Field(..., description="Name of the project")
-    active_at     : Optional[date]                                              = Field(..., description="Date when the project became active")
+    active_at     : date                                              = Field(..., description="Date when the project became active")
     inactive_at   : Optional[date]                                              = Field(None, description="Date when the project became inactive")
     status        : Optional[StatusFlag]                                        = Field(..., description="Status of the project: '1' active, '0' inactive")
 
 class ProjectStaffingAdd(BaseModel):
     project_id    : int = Field(..., description="Unique identifier for the project")
     employees_id  : constr(strip_whitespace=True, min_length=1, max_length=255) = Field(..., description="Unique identifier for the employee")
-    gms_manager   : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="GMS Manager")
-    t_manager     : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="Turing Manager")
-    pod_lead      : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="POD Lead")
+    gms_manager   : constr(strip_whitespace=True, max_length=150)     = Field(None, description="GMS Manager")
+    t_manager     : constr(strip_whitespace=True, max_length=150)     = Field(None, description="Turing Manager")
+    pod_lead      : constr(strip_whitespace=True, max_length=150)     = Field(None, description="POD Lead")
 
 class ProjectWithStaffingAdd(ProjectsAdd):
     employees_id  : constr(strip_whitespace=True, min_length=1, max_length=255) = Field(..., description="Unique identifier for the employee")
-    gms_manager   : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="GMS Manager")
-    t_manager     : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="Turing Manager")
-    pod_lead      : Optional[constr(strip_whitespace=True, max_length=150)]     = Field(None, description="POD Lead")
+    gms_manager   : constr(strip_whitespace=True, max_length=150)     = Field(None, description="GMS Manager")
+    t_manager     : constr(strip_whitespace=True, max_length=150)     = Field(None, description="Turing Manager")
+    pod_lead      : constr(strip_whitespace=True, max_length=150)     = Field(None, description="POD Lead")
 
 class ProjectsUpdate(BaseModel):
     project_name  : constr(strip_whitespace=True, min_length=1, max_length=255) = Field(..., description="Name of the project")
