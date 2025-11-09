@@ -109,7 +109,7 @@ export default function TaskMonitoring() {
         // employee names
         // console.log("Loaded tasks:", taskData);
         setRows(taskData);
-        setTrainers(Array.isArray(namesRes?.data) ? namesRes.data : []);
+        setTrainers(Array.isArray(namesRes?.data) ? namesRes.data.filter(item => (item.role_name || "").toLowerCase() !== "manager") : []);
         // console.log("Loaded employee names:", trainers, typeof trainers);
         
       } catch (err) {
