@@ -160,7 +160,7 @@ export default function TaskMonitoring() {
 
   const onAdd = () => {
     setMode("add");
-    setForm(emptyForm);
+    setForm({ ...emptyForm, date: today });;
     setSubmitted(false);
     setShowModal(true);
   };
