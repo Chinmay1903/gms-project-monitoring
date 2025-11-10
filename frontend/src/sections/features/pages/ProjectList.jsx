@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, useRef } from "react";
 import AppLayout from "../components/AppLayout";
 import "./ProjectList.css";
 import { getEmployeeNames,getProjects, addProject,updateProject,deleteProject } from "../../../api/features";
-import SearchableDropdown from "../components/SearchableDropdown";
 import SearchableSelect from "../components/SearchableSelect";
 
 export default function ProjectList() {
@@ -14,8 +13,8 @@ export default function ProjectList() {
 
     // ---- filters ----
     const [q, setQ] = useState("");
-    const [fManager, setFManager] = useState("All Managers");
-    const [fLead, setFLead] = useState("All Leads");
+    const [fManager, setFManager] = useState("All GMS Managers");
+    const [fLead, setFLead] = useState("All Turing Managers");
     const [fPodLead, setFPodLead] = useState("All Pod Leads");
     const [fTrainer, setFTrainer] = useState("All Trainers");
     const [from, setFrom] = useState("");
@@ -139,8 +138,8 @@ export default function ProjectList() {
     const filtered = useMemo(() => {
         let d = [...rows];
         if (q.trim()) d = d.filter(r => r.name.toLowerCase().includes(q.trim().toLowerCase()));
-        if (fManager !== "All Managers") d = d.filter(r => r.manager === fManager);
-        if (fLead !== "All Leads") d = d.filter(r => r.lead === fLead);
+        if (fManager !== "All GMS Managers") d = d.filter(r => r.manager === fManager);
+        if (fLead !== "All Turing Managers") d = d.filter(r => r.lead === fLead);
         if (fPodLead !== "All Pod Leads") d = d.filter(r => r.podLead === fPodLead);
         if (fTrainer !== "All Trainers") d = d.filter(r => r.trainer === fTrainer);
         if (from) d = d.filter(r => r.start >= from);
@@ -381,7 +380,7 @@ export default function ProjectList() {
                                     value={fLead}
                                     onChange={(e) => setFLead(e.target.value)}
                                 >
-                                    <option>All Turing Manager</option>
+                                    <option>All Turing Managers</option>
                                     {leads.map((m) => <option key={m}>{m}</option>)}
                                 </select>
 
