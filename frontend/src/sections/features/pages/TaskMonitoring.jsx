@@ -760,7 +760,6 @@ export default function TaskMonitoring() {
                   <Th label="Pod Lead" k="podLead" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                   <Th label="Hours" k="hours" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                   <Th label="Billable" k="type" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
-                  {/* <Th label="In Progress" k="inProgress" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} /> */}
                   <Th label="Task Completed" k="taskCompleted" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                   <Th label="Reworked" k="reworked" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
                   <Th label="Approved" k="approved" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
@@ -792,7 +791,6 @@ export default function TaskMonitoring() {
                     <td>{r.podLead}</td>
                     <td>{r.hours}</td>
                     <td>{r.hours > 0 ? "Billable" : "Non-Billable"}</td>
-                    {/* <td className="text-primary fw-semibold">{r.inProgress}</td> */}
                     <td className="text-warning fw-semibold">{r.taskCompleted}</td>
                     <td className="text-danger fw-semibold">{r.reworked}</td>
                     <td className="text-success fw-semibold">{r.approved}</td>
