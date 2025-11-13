@@ -16,7 +16,8 @@ class EmployeesList(BaseModel):
     employees_id  : str = Field(..., description="Unique identifier for the employee")
     first_name    : str = Field(..., description="First name of the employee")
     last_name     : Optional[str] = Field(None, description="Last name of the employee")
-    email         : EmailStr
+    email         : EmailStr= Field(..., description="GMS contact email of the employee")
+    c_email       : Optional[EmailStr] = Field(None, description="Client contact email of the employee")
     phone         : Optional[str] = Field(None, description="Phone number of the employee")
     gender        : Optional[str] = Field(None, description="Gender of the employee")
     designation   : Optional[str] = Field(None, description="Designation of the employee")
@@ -37,7 +38,8 @@ class EmployeesEntry(BaseModel):
     employees_id  : EmployeeId
     first_name    : constr(strip_whitespace=True, min_length=1, max_length=100) = Field(..., description="First name of the employee")  
     last_name     : Optional[constr(strip_whitespace=True, max_length=100)] = Field(None, description="Last name of the employee")
-    email         : EmailStr
+    email         : EmailStr= Field(..., description="GMS contact email of the employee")
+    c_email       : Optional[EmailStr] = Field(None, description="Client contact email of the employee")
     phone         : Optional[PhoneStr] = Field(None, description="Phone number with country code, e.g., +1234567890")
     gender        : Optional[GenderStr] = Field(None, description="Gender: 'M', 'F', 'O'")
     designation   : Optional[constr(strip_whitespace=True, max_length=100)] = Field(None, description="Job title or designation")
@@ -55,7 +57,8 @@ class EmployeesEntry(BaseModel):
 class EmployeesUpdate(BaseModel):
     first_name    : constr(strip_whitespace=True, min_length=1, max_length=100) = Field(..., description="First name of the employee")  
     last_name     : Optional[constr(strip_whitespace=True, max_length=100)] = Field(None, description="Last name of the employee")
-    email         : EmailStr
+    email         : EmailStr = Field(..., description="GMS contact email of the employee")
+    c_email       : Optional[EmailStr] = Field(None, description="Client contact email of the employee")
     phone         : Optional[PhoneStr] = Field(None, description="Phone number with country code, e.g., +1234567890")
     gender        : Optional[GenderStr] = Field(None, description="Gender: 'M', 'F', 'O'")
     designation   : Optional[constr(strip_whitespace=True, max_length=100)] = Field(None, description="Job title or designation")
