@@ -1,4 +1,200 @@
-/* Page-only tweaks */
-.pm-dashboard .btn { border-radius:8px; }
-.pm-dashboard .btn-group .btn { padding:.25rem .6rem; }
-.pm-dashboard .filters { gap:8px; }
+/* ------- Layout to fit inside app-main with no page scroll ------- */
+
+/* Ensure pm-dashboard fills the height of app-main.
+   If app-main already sets height, this inherits 100%.
+   If not, fallback to viewport. */
+.app-main .pm-dashboard {
+  height: 100%;
+}
+.pm-dashboard {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Heights & variables */
+:root {
+  --dash-toolbar-h: 52px;
+  --dash-card-header-h: 48px;
+}
+
+/* Top card takes ~45% height (toolbar + table + pagination) */
+.dash-top {
+  flex: 0 0 45%;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style the toolbar within top card */
+.dash-toolbar {
+  border-bottom: 1px solid #e5dca8;
+  padding: 8px 10px;
+}
+
+/* Table area inside top card fills remaining space minus pagination */
+.dash-table-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* pagination footer is fixed height; the table takes the rest */
+.dash-pagination {
+  flex: 0 0 40px;
+}
+.dash-table-body .table-responsive {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Bottom charts row  */
+.dash-charts {
+  flex: 1 1 55%;
+  min-height: 0; /* allow child columns to stretch without overflow */
+}
+
+/* Each chart card body becomes a flex box so the ResponsiveContainer can fill */
+.chart-body {
+  height: calc(100% - var(--dash-card-header-h));
+  padding: 0.5rem 0.75rem 0.75rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.chart-fill {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative; 
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Make tooltip non-interactive so it never captures scroll/hover */
+.chart-fill .recharts-tooltip-wrapper {
+  pointer-events: none;
+  white-space: nowrap; /* prevents multi-line growth at edges */
+}
+
+/* --- Responsive tick sizing for small viewports --- */
+.chart-fill .barChartLabel {
+  font-size: 11px;
+}
+
+@media (max-width: 1280px) {
+  .chart-fill .barChartLabel {
+    font-size: 10px;
+  }
+}
+@media (max-width: 992px) {
+  .chart-fill .barChartLabel {
+    font-size: 9px;
+  }
+}
+@media (max-width: 768px) {
+  .chart-fill .barChartLabel {
+    font-size: 8px;
+  }
+}
+
+.pm-dashboard .btn {
+  border-radius: 8px;
+}
+.pm-dashboard .btn-group .btn {
+  padding: 0.25rem 0.6rem;
+}
+
+.switch-inline .form-check-input {
+  width: 0.5rem;
+  height: 1.25rem;
+}
+.switch-inline .form-check-label {
+  line-height: 1.25rem;
+}
+
+.pm-dashboard .title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-right: 0.25rem;
+}
+.pm-dashboard .toolbar-line > * {
+  margin-right: 0.35rem;
+}
+
+.pm-chip-group .btn {
+  border-radius: 8px;
+  padding: 0.2rem 0.55rem;
+}
+.pm-chip-group .btn.active {
+  color: #fff;
+  background: #6c757d;
+  border-color: #6c757d;
+}
+
+.pm-compact-input {
+  min-width: 140px;
+}
+
+/* Table polish */
+.dash-table thead th {
+  background: #e9f2f6;
+  color: #374151;
+  border-bottom: 1px solid #cfe3ec;
+  font-weight: 600;
+}
+.dash-table tbody tr:nth-child(odd) {
+  background: #f9fcff;
+}
+.dash-table tbody tr:nth-child(even) {
+  background: #f3f8fd;
+}
+.dash-table td,
+.dash-table th {
+  vertical-align: middle;
+}
+.dash-table tbody tr {
+  cursor: pointer;
+}
+.dash-table .project-pill {
+  display: inline-block;
+  padding: 0.25rem 0.4rem;
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+}
+
+/* Donut legend */
+.legend {
+  display: flex;
+  gap: 12px;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+.legend .dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* Tighten card headers so chart-body calc is accurate */
+.card .card-header {
+  min-height: var(--dash-card-header-h);
+  padding: 0.5rem 0.75rem;
+}
+
+
+/* --- Responsive tick sizing for small viewports (charts only) --- */
+@media (max-width: 1280px) {
+  .chart-fill .barChartLabel { font-size: 10px; }
+}
+@media (max-width: 992px) {
+  .chart-fill .barChartLabel { font-size: 9px; }
+}
+@media (max-width: 768px) {
+  .chart-fill .barChartLabel { font-size: 8px; }
+}

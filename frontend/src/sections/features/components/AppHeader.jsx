@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate  } from "react-router-dom";
+import { clearToken } from "../../../api/authSession";
 import "./AppHeader.css";
 
 const ROUTE_TITLES = {
@@ -20,7 +21,7 @@ export default function AppHeader({
     const wrapRef = useRef(null);
 
     const toggleMenu = () => setOpen((v) => !v);
-    const closeMenu = () => setOpen(false);
+    // const closeMenu = () => setOpen(false);
 
     // close on outside click
     useEffect(() => {
@@ -44,8 +45,16 @@ export default function AppHeader({
 
     const handleLogout = () => {
         // clear any auth state if you store it
-        // localStorage.removeItem("token");
-        navigate("/", { replace: true }); // adjust if your login route is different
+        try{
+            clearToken();
+            localStorage.removeItem("remeberUser");
+            sessionStorage.removeItem("rememberUser");
+        }
+        finally {
+            setOpen(false);
+            navigate("/", { replace: true });
+            setTimeout(() => navigate(0), 0);
+        }
     };
 
     return (

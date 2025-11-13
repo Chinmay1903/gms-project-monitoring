@@ -1,122 +1,103 @@
-.tasks-page{ padding: 6px 8px; }
-
-.tasks-actions{
-    margin: 6px 0 8px;
+/* Heights & variables (compact to prevent page scroll inside .app-main) */
+:root {
+  --chart-h: 210px;
+  --toolbar-min-h: 44px;
+  --thead-h: 40px;
 }
 
-/* Card shell */
-.tasks-card.card{
+/* Page shell */
+.tasks-page {
+  padding: 4px 6px; /* tighter so footer shows without scrolling */
+}
+
+/* Card wrapper */
+.tasks-card.card {
   border-radius: 10px;
-  border: 1px solid var(--pm-border, #d1d5db);
+  border: 1px solid #d1d5db;
   overflow: hidden;
 }
 
-/* Toolbar (buttery strip) */
-.tasks-toolbar{
+/* Toolbar */
+.tasks-toolbar {
   position: relative;
   background: #f6eec7;
   border-bottom: 1px solid #e5dca8;
-  padding: 10px;
+  padding: 8px 10px;
+  min-height: var(--toolbar-min-h);
 }
-.tasks-toolbar .title{
+.tasks-toolbar .title {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.98rem;
 }
-.tasks-toolbar .hint{
+.tasks-toolbar .hint {
   position: absolute;
   right: 12px;
-  top: 10px;
+  top: 8px;
 }
 
-/* Floating add button inside toolbar (right side) */
-.fab-add{
+/* Back button slot */
+.tasks-card .tasks-toolbar.has-back {
+  position: relative;
+  --back-slot: 85px;
+}
+.tasks-card .tasks-toolbar.has-back > .d-flex {
+  padding-left: var(--back-slot);
+  position: relative;
+  z-index: 1;
+}
+.tasks-card .tasks-toolbar.has-back .btn.action-btn.btn-back {
   position: absolute;
-  right: 12px;
-  bottom: 10px;
-  border-radius: 12px;
-  padding: .35rem .6rem;
+  left: 1px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  z-index: 10;
+}
+.tasks-card .tasks-toolbar.has-back .btn.action-btn.btn-back .label {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.16s, opacity 0.16s, margin-left 0.16s;
+}
+.tasks-card .tasks-toolbar.has-back .btn.action-btn.btn-back:hover .label,
+.tasks-card
+  .tasks-toolbar.has-back
+  .btn.action-btn.btn-back:focus-visible
+  .label {
+  max-width: calc(var(--back-slot) - 44px);
+  opacity: 1;
+  margin-left: 0.3rem;
 }
 
 /* Table look */
-.tasks-table thead th{
+.tasks-table thead th {
   background: #e9f2f6;
   color: #374151;
   border-bottom: 1px solid #cfe3ec;
   font-weight: 600;
+  height: var(--thead-h);
 }
-.tasks-table tbody tr:nth-child(odd){  background:#e6f6ff; }
-.tasks-table tbody tr:nth-child(even){ background:#d8eef9; }
-.tasks-table td, .tasks-table th{ vertical-align: middle; }
-
-/* Sort indicator */
-th .sort{ color:#9ca3af; }
-th .sort.asc  { color:#0d6efd; transform: rotate(180deg); display:inline-block; }
-th .sort.desc { color:#0d6efd; }
-
-/* Trainer link */
-.name-link{ color:#0d6efd; text-decoration:none; }
-.name-link:hover{ text-decoration:underline; }
-
-/* Modal polish */
-.modal-content{ border-radius: 10px; }
-.modal-header{ border-bottom: 1px solid #e5e7eb; }
-.modal-footer{ border-top: 1px solid #e5e7eb; }
-
-@media (max-width: 576px){
-  .tasks-toolbar .hint{ position: static; margin-top: 4px; }
-  .fab-add{ position: static; margin-top: 6px; }
+.tasks-table tbody tr:nth-child(odd) {
+  background: #e6f6ff;
 }
-.tasks-page{ padding: 6px 8px; }
-
-/* Card shell */
-.tasks-card.card{
-  border-radius: 10px;
-  border: 1px solid var(--pm-border, #d1d5db);
-  overflow: hidden;
+.tasks-table tbody tr:nth-child(even) {
+  background: #d8eef9;
+}
+.tasks-table td,
+.tasks-table th {
+  vertical-align: middle;
+  padding: 0.32rem 0.45rem; /* compact for 10/5 rows fit */
 }
 
-/* Toolbar (buttery strip) */
-.tasks-toolbar{
-  position: relative;
-  background: #f6eec7;
-  border-bottom: 1px solid #e5dca8;
-  padding: 10px;
-}
-.tasks-toolbar .title{
-  font-weight: 700;
-  font-size: 1rem;
-}
-.tasks-toolbar .hint{
-  position: absolute;
-  right: 12px;
-  top: 10px;
-}
-
-/* Floating add button inside toolbar (right side) */
-.fab-add{
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-  border-radius: 12px;
-  padding: .35rem .6rem;
-}
-
-/* Table look */
-.tasks-table thead th{
-  background: #e9f2f6;
-  color: #374151;
-  border-bottom: 1px solid #cfe3ec;
-  font-weight: 600;
-}
-.tasks-table tbody tr:nth-child(odd){  background:#e6f6ff; }
-.tasks-table tbody tr:nth-child(even){ background:#d8eef9; }
-.tasks-table td, .tasks-table th{ vertical-align: middle; }
-
-/* Sort indicator */
+/* Sort UX */
 .tasks-table th.sortable {
   user-select: none;
 }
-
 .tasks-table th.sortable > button.sort-btn {
   border: 0;
   background: transparent;
@@ -125,29 +106,109 @@ th .sort.desc { color:#0d6efd; }
   font-weight: 600;
   display: inline-flex;
   align-items: center;
-  gap: .25rem;
+  gap: 0.25rem;
   color: inherit;
+  font-size: 13px;
 }
-
 .tasks-table th.sortable .sort-icon {
-  opacity: .6;
+  opacity: 0.6;
 }
-
 .tasks-table th.sortable.active .sort-icon {
   opacity: 1;
 }
 
+/* Icon-first buttons */
+.btn.action-btn {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.btn.action-btn .label {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 0.16s, opacity 0.16s, margin-left 0.16s;
+}
+.btn.action-btn:hover .label,
+.btn.action-btn:focus-visible .label {
+  max-width: 10rem;
+  opacity: 1;
+  margin-left: 0.3rem;
+}
+
+/* Row actions */
+.action-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
 
 /* Trainer link */
-.name-link{ color:#0d6efd; text-decoration:none; }
-.name-link:hover{ text-decoration:underline; }
+.name-link {
+  color: #0d6efd;
+  text-decoration: none;
+}
+.name-link:hover {
+  text-decoration: underline;
+}
 
-/* Modal polish */
-.modal-content{ border-radius: 10px; }
-.modal-header{ border-bottom: 1px solid #e5e7eb; }
-.modal-footer{ border-top: 1px solid #e5e7eb; }
+/* Axis hint under charts */
+.axis-hint {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 4px;
+  color: #6c757d;
+}
 
-@media (max-width: 576px){
-  .tasks-toolbar .hint{ position: static; margin-top: 4px; }
-  .fab-add{ position: static; margin-top: 6px; }
+/* Pagination/footer band compaction */
+.card .px-3.py-2 {
+  padding: 6px 10px !important;
+}
+
+.chart-fill {
+  position: relative; 
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Make tooltip non-interactive so it never captures scroll/hover */
+.chart-fill .recharts-tooltip-wrapper {
+  pointer-events: none;
+  white-space: nowrap; /* prevents multi-line growth at edges */
+}
+
+/* ----------------- Responsive hardening ----------------- */
+@media (max-width: 992px) {
+  .tasks-table td,
+  .tasks-table th {
+    padding: 0.25rem 0.35rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tasks-toolbar .title {
+    font-size: 0.92rem;
+  }
+  .tasks-toolbar .hint {
+    display: none; /* collapse on small screens */
+  }
+  .tasks-card .tasks-toolbar.has-back {
+    --back-slot: 64px; /* shrink back button slot */
+  }
+}
+
+@media (max-width: 576px) {
+  .tasks-page {
+    padding: 4px; /* tighter on phones */
+  }
+  .tasks-table th.sortable > button.sort-btn {
+    font-size: 12px;
+  }
+  .tasks-table td {
+    font-size: 12px;
+  }
+  .tasks-card .tasks-toolbar.has-back {
+    --back-slot: 54px; /* even tighter on xs */
+  }
 }

@@ -1,10 +1,16 @@
 import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import AuthCard from "../components/AuthCard";
 import { loginApi } from "../../../api/auth";
+import { saveToken, touchActivity } from "../../../api/authSession";
 
 const DOMAIN = "@giantmindsolutions.com";
+
+// Rescue Credencials Keys
+const REMEMBER_FLAG = "rememberFlag"
+const REMEMBER_EMAIL = "rememberUser"
+const REMEMBER_PASS = "rememberPassword"
 
 // Ensure the email always ends with @giantminds.com
 function normalizeEmail(input) {
@@ -15,10 +21,29 @@ function normalizeEmail(input) {
 }
 
 export default function Login() {
-  const inputRef = useRef(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
+  const [email, setEmail] = useState(() => {
+    try {
+      const opted = localStorage.getItem(REMEMBER_FLAG) === "1"
+      if (!opted) return "";
+      const stored = localStorage.getItem(REMEMBER_EMAIL) || "";
+      return stored ? normalizeEmail(stored) : "";
+
+    } catch { return ""; }
+  });
+
+  const [password, setPassword] = useState(() => {
+    try {
+      const opted = localStorage.getItem(REMEMBER_FLAG) === "1"
+      if (!opted) return "";
+      return localStorage.getItem(REMEMBER_PASS) || "";
+    } catch { return ""; }
+  });
+
+  const [remember, setRemember] = useState(() => {
+    try {
+      { return localStorage.getItem(REMEMBER_FLAG) === "1"; }
+    } catch { return false; }
+  });
 
   const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
   const [formError, setFormError] = useState("");
@@ -26,31 +51,17 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation(); // <-- added
+  const from = location.state?.from?.pathname || "/dashboard"; // <-- added
   const redirectTimer = useRef(null);
 
   const handleEmailChange = (e) => {
-    const el = e.target;
-    const raw = el.value;
-    const caret = el.selectionStart ?? raw.length;
-
-    // split what the user typed before/after '@'
-    const [prefixPart] = raw.split("@");
-    const normalized = prefixPart ? `${prefixPart}${DOMAIN}` : "";
-
-    // clear email error while typing
-    if (fieldErrors.email) setFieldErrors(fe => ({ ...fe, email: "" }));
-
+    const raw = e.target.value;
+    // On ANY change, enforce postfix in the field itself
+    const normalized = normalizeEmail(raw);
     setEmail(normalized);
-
-    // keep the caret where the user was typing (inside the prefix)
-    const newPos = Math.min(caret, prefixPart.length);
-
-    // restore caret on next paint (after React updates value)
-    requestAnimationFrame(() => {
-      if (inputRef.current && document.activeElement === inputRef.current) {
-        inputRef.current.setSelectionRange(newPos, newPos);
-      }
-    });
+    // live validation reset for email
+    if (fieldErrors.email) setFieldErrors((fe) => ({ ...fe, email: "" }));
   };
 
   const validate = () => {
@@ -87,7 +98,7 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const { ok, message } = await loginApi({ username: finalEmail, password });
+      const { ok, message, data } = await loginApi({ username: finalEmail, password });
 
       if (ok) {
         // Show message immediately after button click
@@ -95,12 +106,27 @@ export default function Login() {
 
         // Optional preference store
         try {
-          (remember ? localStorage : sessionStorage).setItem("rememberUser", finalEmail);
-        } catch {}
+          if (remember) {
+            localStorage.setItem(REMEMBER_FLAG, "1");
+            localStorage.setItem(REMEMBER_EMAIL, finalEmail);
+            localStorage.setItem(REMEMBER_PASS, password);
+          } else {
+            localStorage.removeItem(REMEMBER_FLAG);
+            localStorage.removeItem(REMEMBER_EMAIL);
+            localStorage.removeItem(REMEMBER_PASS);
+            sessionStorage.removeItem("remeberUser");
+          }
+        } catch { }
 
-        // Redirect shortly after showing the message (adjust delay as you like)
+        // NEW: persist auth + seed idle tracking
+        // If your API returns a token, prefer that: data?.token
+        const token = data?.token || "true";
+        saveToken(token);
+        touchActivity();
+
+        // Redirect shortly after showing the message (to intended route or /dashboard)
         redirectTimer.current = setTimeout(() => {
-          navigate("/dashboard", { replace: true });
+          navigate(from, { replace: true });
         }, 900);
         return;
       }
@@ -130,7 +156,6 @@ export default function Login() {
               <i className="bi bi-envelope" />
             </span>
             <input
-              ref={inputRef}
               className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
               placeholder={`your.name${DOMAIN}`}
               value={email}
@@ -181,7 +206,16 @@ export default function Login() {
                 type="checkbox"
                 className="form-check-input"
                 checked={remember}
-                onChange={(e) => setRemember(e.target.checked)}
+                onChange={(e) => {
+                  const checked = e.target.checked;
+                  setRemember(checked);
+                  try {
+                    localStorage.removeItem(REMEMBER_FLAG);
+                    localStorage.removeItem(REMEMBER_EMAIL);
+                    localStorage.removeItem(REMEMBER_PASS);
+                    sessionStorage.removeItem("rememberUser");
+                  } catch { }
+                }}
               />
               <label htmlFor="remember" className="form-check-label" style={{ color: "var(--text-faint)" }}>
                 Remember me
