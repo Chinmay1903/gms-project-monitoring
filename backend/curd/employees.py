@@ -51,6 +51,7 @@ class EmployeesCurdOperation:
             "first_name": d["first_name"],
             "last_name": d.get("last_name"),
             "email": d["email"],
+            "c_email": d.get("c_email"),
             "phone": d.get("phone"),
             "gender": d.get("gender"),
             "designation": d.get("designation"),
@@ -83,7 +84,7 @@ class EmployeesCurdOperation:
 
         stmt = (
             select(
-                e.c.employees_id, e.c.first_name, e.c.last_name, e.c.email, e.c.phone, e.c.gender,
+                e.c.employees_id, e.c.first_name, e.c.last_name, e.c.email, e.c.c_email, e.c.phone, e.c.gender,
                 e.c.designation, e.c.role, e.c.skill, e.c.experience, e.c.qualification,
                 e.c.state, e.c.city, e.c.active_at, e.c.inactive_at, e.c.status,
                 e.c.created_at, e.c.updated_at,
@@ -150,7 +151,7 @@ class EmployeesCurdOperation:
         e, r = employees.alias("e"), roles.alias("r")
         stmt = (
             select(
-                e.c.employees_id, e.c.first_name, e.c.last_name, e.c.email, e.c.phone, e.c.gender,
+                e.c.employees_id, e.c.first_name, e.c.last_name, e.c.email, e.c.c_email, e.c.phone, e.c.gender,
                 e.c.designation, e.c.role, e.c.skill, e.c.experience, e.c.qualification,
                 e.c.state, e.c.city, e.c.active_at, e.c.inactive_at, e.c.status,
                 e.c.created_at, e.c.updated_at,
@@ -187,6 +188,7 @@ class EmployeesCurdOperation:
                 "first_name": employee.first_name,
                 "last_name": employee.last_name,
                 "email": employee.email,
+                "c_email": employee.c_email,
                 "phone": employee.phone,
                 "gender": employee.gender,
                 "designation": employee.designation,

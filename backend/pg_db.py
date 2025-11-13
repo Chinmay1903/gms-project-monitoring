@@ -64,6 +64,7 @@ employees = sa.Table(
     sa.Column("first_name", sa.String(100), nullable=False),
     sa.Column("last_name", sa.String(100), nullable=True),
     sa.Column("email", sa.String(255), nullable=False),
+    sa.Column("c_email", sa.String(255), nullable=True),
     sa.Column("phone", sa.String(20), nullable=True),
     sa.Column("gender", sa.CHAR(1), nullable=True),
     sa.Column("designation", sa.String(100), nullable=True),
