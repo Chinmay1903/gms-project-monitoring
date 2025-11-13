@@ -21,6 +21,7 @@ function normalizeEmail(input) {
 }
 
 export default function Login() {
+  const inputRef = useRef(null);
   const [email, setEmail] = useState(() => {
     try {
       const opted = localStorage.getItem(REMEMBER_FLAG) === "1"
@@ -56,12 +57,27 @@ export default function Login() {
   const redirectTimer = useRef(null);
 
   const handleEmailChange = (e) => {
-    const raw = e.target.value;
-    // On ANY change, enforce postfix in the field itself
-    const normalized = normalizeEmail(raw);
+    const el = e.target;
+    const raw = el.value;
+    const caret = el.selectionStart ?? raw.length;
+
+    // split what the user typed before/after '@'
+    const [prefixPart] = raw.split("@");
+    const normalized = prefixPart ? `${prefixPart}${DOMAIN}` : "";
+
+    // clear email error while typing
+    if (fieldErrors.email) setFieldErrors(fe => ({ ...fe, email: "" }));
     setEmail(normalized);
-    // live validation reset for email
-    if (fieldErrors.email) setFieldErrors((fe) => ({ ...fe, email: "" }));
+    
+    // keep the caret where the user was typing (inside the prefix)
+    const newPos = Math.min(caret, prefixPart.length);
+
+    // restore caret on next paint (after React updates value)
+    requestAnimationFrame(() => {
+      if (inputRef.current && document.activeElement === inputRef.current) {
+        inputRef.current.setSelectionRange(newPos, newPos);
+      }
+    });
   };
 
   const validate = () => {
@@ -156,6 +172,7 @@ export default function Login() {
               <i className="bi bi-envelope" />
             </span>
             <input
+              ref={inputRef}
               className={`form-control ${fieldErrors.email ? "is-invalid" : ""}`}
               placeholder={`your.name${DOMAIN}`}
               value={email}
