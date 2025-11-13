@@ -1,15 +1,8 @@
 /* scope everything under .rl-scope to avoid global bleed */
-/* .rl-scope .card { 
-  border-radius: .5rem; 
-} */
-
-/* .rl-scope .table.has-actions { 
-  table-layout: fixed; 
-} */
 
 .rl-scope .table th.actions-col,
 .rl-scope .table td.actions-col {
-  width: 160px;
+  width: 180px;
 }
 
 /* Icon-first action buttons (Edit/Delete/Add) */
@@ -40,11 +33,10 @@
   gap: .6rem;
 }
 
-/* Sorting UI (mirrors your cshtml) */
+/* Sorting UI (mirrors .tasks-table) */
 .rl-scope th.sortable {
   user-select: none;
 }
-
 .rl-scope th.sortable > button.sort-btn {
   border: 0;
   background: transparent;
@@ -56,11 +48,5 @@
   gap: .25rem;
   color: inherit;
 }
-
-.rl-scope th.sortable .sort-icon {
-  opacity: .6;
-}
-
-.rl-scope th.sortable.active .sort-icon {
-  opacity: 1;
-}
+.rl-scope th.sortable .sort-icon { opacity: .6; }
+.rl-scope th.sortable.active .sort-icon { opacity: 1; }
