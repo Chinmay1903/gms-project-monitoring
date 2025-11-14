@@ -39,6 +39,7 @@ class TaskMonitorsCurd:
                 tm.c.task_id,
                 tm.c.project_staffing_id,
                 tm.c.task_date,
+                tm.c.billlable,
                 tm.c.task_completed,
                 tm.c.task_inprogress,
                 tm.c.task_reworked,
@@ -100,6 +101,7 @@ class TaskMonitorsCurd:
                 tm.c.task_id,
                 tm.c.project_staffing_id,
                 tm.c.task_date,
+                tm.c.billable,
                 tm.c.task_completed,
                 tm.c.task_inprogress,
                 tm.c.task_reworked,
@@ -195,6 +197,7 @@ class TaskMonitorsCurd:
                 .values(
                     project_staffing_id = ps_id,
                     task_date           = task.task_date,
+                    billable            = task.billable,
                     task_completed      = task.task_completed,
                     task_inprogress     = task.task_inprogress,
                     task_reworked       = task.task_reworked,
