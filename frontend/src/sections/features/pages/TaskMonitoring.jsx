@@ -237,7 +237,7 @@ export default function TaskMonitoring() {
             hours: Number(t.hours_logged || 0),
             overtime: Number(t.hours_logged || 0) > 8,
             inProgress: Number(t.task_inprogress || 0),
-            billable: Boolean(t.is_billable || false),
+            billable: Boolean(t.billable || false),
             taskCompleted: Number(t.task_completed || 0),
             reworked: Number(t.task_reworked || t.reworked || 0),
             approved: Number(t.task_approved || 0),
