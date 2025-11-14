@@ -1,3 +1,5 @@
+
+
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import AppLayout from "../components/AppLayout";
 import "./ResourceList.css";
@@ -58,6 +60,9 @@ export default function ResourceList() {
   const [roleTab, setRoleTab] = useState("All");
   const [q, setQ] = useState("");
   const [showInactive, setShowInactive] = useState(false);
+
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
 
   // ---------- sort ----------
   const [sortKey, setSortKey] = useState("name");
@@ -208,11 +213,22 @@ export default function ResourceList() {
 
   // ---------- helpers ----------
   const normalize = (s) => s?.replace("T", " ").replace("Z", "") || "";
-  const toDMY = (dmy) => {
-    const n = normalize(dmy);
+  const toYMD = (d) => {
+    const n = normalize(d);
     if (!n) return "";
-    const [y, m, d] = n.split(" ")[0].split("-");
-    return d && m && y ? `${d}-${m}-${y}` : dmy;
+    const dmy = /^\d{2}-\d{2}-\d{4}$/;
+    if (dmy.test(n)) {
+      const [dd, mm, yy] = n.split("-");
+      return `${yy}-${mm}-${dd}`;
+    }
+    return n.slice(0, 10);
+  };
+
+  const toDMY = (d) => {
+    const n = normalize(d);
+    if (!n) return "";
+    const [y, m, dd] = n.split(" ")[0].split("-");
+    return dd && m && y ? `${dd}-${m}-${y}` : d;
   };
 
   // ---------- derived ----------
@@ -235,6 +251,13 @@ export default function ResourceList() {
     } else {
       d = d.filter((r) => r.status !== "0");
     }
+
+    // date range on start date
+    const fISO = toYMD(from);
+    const tISO = toYMD(to);
+    if (fISO) d = d.filter((r) => toYMD(r.start) >= fISO);
+    if (tISO) d = d.filter((r) => toYMD(r.start) <= tISO);
+
     d.sort((a, b) => {
       const A = (a[sortKey] ?? "").toString().toLowerCase();
       const B = (b[sortKey] ?? "").toString().toLowerCase();
@@ -242,7 +265,7 @@ export default function ResourceList() {
       return sortDir === "asc" ? cmp : -cmp;
     });
     return d;
-  }, [rows, roleTab, q, sortKey, sortDir, showInactive]);
+  }, [rows, roleTab, q, sortKey, sortDir, showInactive, from, to]);
 
   // pagination derived
   const pageCount = Math.max(1, Math.ceil(filtered.length / ROWS_PER_PAGE));
@@ -260,6 +283,12 @@ export default function ResourceList() {
     setPage(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleTab, q, showInactive]);
+
+  useEffect(() => {
+    setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roleTab, q, showInactive, from, to]);
+
 
   // ---------- actions ----------
   const onAdd = () => {
@@ -590,17 +619,54 @@ export default function ResourceList() {
                 </div>
               </div>
 
-              <div className="input-group" style={{ maxWidth: 360 }}>
+              <div className="d-flex align-items-center gap-2 flex-wrap">
+                <div className="d-flex align-items-center gap-2">
+                  <input
+                    placeholder="From Date"
+                    type="text"
+                    className="form-control date-input"
+                    value={from}
+                    onChange={(e) => setFrom(e.target.value)}
+                    onFocus={(e) => {
+                      e.target.type = "date";
+                      if (from) e.target.value = toYMD(from);
+                    }}
+                    onBlur={(e) => {
+                      const picked = e.target.value;
+                      e.target.type = "text";
+                      setFrom(picked ? toDMY(picked) : "");
+                    }}
+                  />
+                  <input
+                    placeholder="To Date"
+                    type="text"
+                    className="form-control date-input"
+                    value={to}
+                    onChange={(e) => setTo(e.target.value)}
+                    onFocus={(e) => {
+                      e.target.type = "date";
+                      if (to) e.target.value = toYMD(to);
+                    }}
+                    onBlur={(e) => {
+                      const picked = e.target.value;
+                      e.target.type = "text";
+                      setTo(picked ? toDMY(picked) : "");
+                    }}
+                  />
+                </div>
+
+                <div className="input-group header-search">
                 <span className="input-group-text bg-white">
                   <i className="bi bi-search" />
                 </span>
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search name / id / email"
+                  placeholder="Search by ID / Name / Email / etc.... "
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
+                </div>
               </div>
             </div>
           </div>

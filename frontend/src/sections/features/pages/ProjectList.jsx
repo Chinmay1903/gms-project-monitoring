@@ -33,7 +33,7 @@ export default function ProjectList() {
 
   // filters
   const [q, setQ] = useState("");
-  const [fManager, setFManager] = useState("All GMS Manager");
+  const [fManager, setFManager] = useState("All GMS Coordinator");
   const [fLead, setFLead] = useState("All Turing Manager");
   const [fPodLead, setFPodLead] = useState("All Pod Leads");
   const [fTrainer, setFTrainer] = useState("All Trainers");
@@ -207,7 +207,7 @@ export default function ProjectList() {
     let d = [...rows];
 
     if (q.trim()) d = d.filter((r) => r.name.toLowerCase().includes(q.trim().toLowerCase()));
-    if (fManager !== "All GMS Manager") d = d.filter((r) => r.manager === fManager);
+    if (fManager !== "All GMS Coordinator") d = d.filter((r) => r.manager === fManager);
     if (fLead !== "All Turing Manager") d = d.filter((r) => r.lead === fLead);
     if (fPodLead !== "All Pod Leads") d = d.filter((r) => r.podLead === fPodLead);
     if (fTrainer !== "All Trainers") d = d.filter((r) => r.trainer === fTrainer);
@@ -237,7 +237,7 @@ export default function ProjectList() {
   useEffect(() => { setPage(1); }, [q, fManager, fLead, fPodLead, fTrainer, from, to, showInactive]);
 
   const resetFilters = () => {
-    setQ(""); setFManager("All GMS Manager"); setFLead("All Turing Manager");
+    setQ(""); setFManager("All GMS Coordinator"); setFLead("All Turing Manager");
     setFPodLead("All Pod Leads"); setFTrainer("All Trainers");
     setFrom(""); setTo("");
   };
@@ -478,7 +478,7 @@ export default function ProjectList() {
 
   return (
     <AppLayout>
-      <div className="pl-scope px-2 py-2">
+      <div className="projects-page pl-scope px-2 py-2">
         {/* hidden file input (placeholder for future) */}
         <input
           type="file"
@@ -492,7 +492,7 @@ export default function ProjectList() {
         />
 
         {/* actions */}
-        <div className="d-flex justify-content-end mb-2 gap-2">
+        <div className="d-flex justify-content-end mb-2 gap-2 pl-actions">
           <button className="btn btn-primary action-btn" title="Import CSV">
             <i className="bi bi-database-up" />
             <span className="label">Import Data</span>
@@ -509,9 +509,9 @@ export default function ProjectList() {
 
         <div className="card bg-body-tertiary border-3 rounded-3 shadow">
           <div className="card-header bg-warning-subtle text-warning-emphasis">
-            {/* header row */}
-            <div className="d-flex align-items-center justify-content-between header-row">
-              <div className="d-flex align-items-center gap-3">
+            {/* TOP LINE: title + toggle + search */}
+            <div className="d-flex align-items-center justify-content-between flex-wrap gap-2 header-row">
+              <div className="d-flex align-items-center gap-3 header-left">
                 <h5 className="mb-0">Projects</h5>
 
                 {/* Show Inactive toggle (pure state; no data mutation) */}
@@ -529,28 +529,31 @@ export default function ProjectList() {
                 </div>
               </div>
 
-              {/* Search */}
+              {/* search stays on the top line */}
+              <div className="d-flex align-items-center gap-2">
               <div className="input-group header-search">
                 <span className="input-group-text bg-white">
                   <i className="bi bi-search" />
                 </span>
                 <input
                   className="form-control"
-                  placeholder="Search projects by name"
+                  placeholder="Search by ID / Name / Email / etc...."
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                 />
               </div>
             </div>
+            </div>
 
-            {/* Filters — custom dropdowns (headless) + your original date inputs */}
-            <div className="d-flex align-items-center justify-content-end gap-2 mt-2 pl-filter">
+            {/* SECOND LINE: filters + date range */}
+            <div className="d-flex align-items-center justify-content-end flex-wrap gap-2 mt-2 pl-filter">
+              <div className="d-flex align-items-center gap-2 flex-wrap">
               <i className="bi bi-funnel me-1 opacity-75" />
 
               <CustomDropdown
-                label="All GMS Manager"
+                label="All GMS Coordinator"
                 value={fManager}
-                items={["All GMS Manager", ...managers]}
+                items={["All GMS Coordinator", ...managers]}
                 onChange={setFManager}
               />
               <CustomDropdown
@@ -571,16 +574,22 @@ export default function ProjectList() {
                 items={["All Trainers", ...trainers]}
                 onChange={setFTrainer}
               />
-
-              {/* date filters – fixed width (30%) via CSS) */}
+                <div className="d-flex align-items-center gap-2">
               <input
                 placeholder="From Date"
                 type="text"
                 className="form-control date-input"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
-                onFocus={(e) => { e.target.type = "date"; if (from) e.target.value = toYMD(from); }}
-                onBlur={(e) => { const picked = e.target.value; e.target.type = "text"; setFrom(picked ? toDMY(picked) : ""); }}
+                    onFocus={(e) => {
+                      e.target.type = "date";
+                      if (from) e.target.value = toYMD(from);
+                    }}
+                    onBlur={(e) => {
+                      const picked = e.target.value;
+                      e.target.type = "text";
+                      setFrom(picked ? toDMY(picked) : "");
+                    }}
               />
               <input
                 placeholder="To Date"
@@ -588,19 +597,30 @@ export default function ProjectList() {
                 className="form-control date-input"
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
-                onFocus={(e) => { e.target.type = "date"; if (to) e.target.value = toYMD(to); }}
-                onBlur={(e) => { const picked = e.target.value; e.target.type = "text"; setTo(picked ? toDMY(picked) : ""); }}
+                    onFocus={(e) => {
+                      e.target.type = "date";
+                      if (to) e.target.value = toYMD(to);
+                    }}
+                    onBlur={(e) => {
+                      const picked = e.target.value;
+                      e.target.type = "text";
+                      setTo(picked ? toDMY(picked) : "");
+                    }}
               />
-
-              <button className="btn btn-outline-secondary d-flex align-items-center" onClick={resetFilters}>
+                </div>
+                <button
+                  className="btn btn-outline-secondary d-flex align-items-center"
+                  onClick={resetFilters}
+                >
                 <i className="bi bi-arrow-counterclockwise me-1" /> Reset
               </button>
             </div>
           </div>
+          </div>
 
           {/* TABLE */}
-          <div className="table-responsive bg-warning-subtle text-warning-emphasis rounded shadow">
-            <table className="table gm-table table-hover align-middle mb-0 has-actions">
+          <div className="table-responsive">
+            <table className="table table-hover tasks-table">
               <thead>
                 <tr className="table-light-emphasis">
                   <Th label="ID" k="id" sortKey={sortKey} sortDir={sortDir} onSort={toggleSort} />
@@ -626,12 +646,20 @@ export default function ProjectList() {
                     <td>{toDMY(r.start)}</td>
                     {showInactive && <td>{r.end ? toDMY(r.end) : "-"}</td>}
                     <td className="actions-col">
-                      <div className="action-wrap">
-                        <button className="btn btn-outline-info btn-sm action-btn" onClick={() => onEdit(r)} title="Edit">
+                      <div className="action-wrap" role="group" aria-label="Actions">
+                        <button
+                          className="btn btn-outline-secondary btn-sm action-btn"
+                          onClick={() => onEdit(r)}
+                          title="Edit"
+                        >
                           <i className="bi bi-pencil-square" />
                           <span className="label">Edit</span>
                         </button>
-                        <button className="btn btn-outline-danger btn-sm action-btn" onClick={() => onDelete(r.id)} title="Delete">
+                        <button
+                          className="btn btn-outline-danger btn-sm action-btn"
+                          onClick={() => onDelete(r.id)}
+                          title="Delete"
+                        >
                           <i className="bi bi-trash3" />
                           <span className="label">Delete</span>
                         </button>
@@ -686,7 +714,7 @@ export default function ProjectList() {
                           </div>
 
                           <div className="col-12 col-md-6">
-                            <label className="form-label">GMS Manager Name <span className="text-danger">*</span></label>
+                            <label className="form-label">GMS Coordinator Name <span className="text-danger">*</span></label>
                             <input
                               list="managersList"
                               className={`form-control ${submitted && errors.manager ? "is-invalid" : ""}`}
@@ -727,7 +755,7 @@ export default function ProjectList() {
                           </div>
 
                           <div className="col-12 col-md-6 col-lg-6">
-                            <label className="form-label">Trainer <span className="text-danger">*</span></label>
+                            <label className="form-label">Resource Name <span className="text-danger">*</span></label>
                             <SearchableSelect
                               items={trainersList}
                               value={form.trainer}

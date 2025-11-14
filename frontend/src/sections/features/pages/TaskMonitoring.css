@@ -29,11 +29,10 @@
   font-weight: 700;
   font-size: 0.98rem;
 }
-.tasks-toolbar .hint {
-  position: absolute;
-  right: 12px;
-  top: 8px;
-}
+/* .tasks-toolbar .hint {
+  position: relative;
+  left: -5px;
+} */
 
 /* Back button slot */
 .tasks-card .tasks-toolbar.has-back {
@@ -211,4 +210,27 @@
   .tasks-card .tasks-toolbar.has-back {
     --back-slot: 54px; /* even tighter on xs */
   }
+}
+
+
+/* Date + search inputs in tasks toolbar */
+.tasks-toolbar .date-input {
+  width: 120px;
+  font-size: 0.875rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+}
+
+.tasks-toolbar .header-search {
+  width: clamp(260px, 28vw, 360px);
+}
+
+.tasks-toolbar .header-search .input-group-text {
+  border-radius: 999px 0 0 999px;
+  border-right: 0;
+}
+
+.tasks-toolbar .header-search .form-control {
+  border-radius: 0 999px 999px 0;
 }
