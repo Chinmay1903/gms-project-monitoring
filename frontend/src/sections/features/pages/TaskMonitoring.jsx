@@ -495,7 +495,7 @@ export default function TaskMonitoring() {
       employees_id: form.trainerId,
       project_id: form.project_id ? Number(form.project_id) : 0,
       task_date: form.date || TODAY,
-      billable: form.billable || 0,
+      billable: form.billable || false,
       task_completed: Number(form.taskCompleted || 0),
       task_inprogress: Number(form.inProgress || 0),
       task_reworked: Number(form.reworked || 0),
