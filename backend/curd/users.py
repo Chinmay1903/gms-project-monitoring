@@ -82,12 +82,12 @@ class UserCurdOperation:
 
     # -------- Update --------
     @staticmethod
-    async def update_user(user: UserUpdate) -> Dict[str, Any]:
+    async def update_user(userId: str, user: UserUpdate) -> Dict[str, Any]:
         now = datetime.now(timezone.utc)
 
         upd = (
             users.update()
-            .where(users.c.id == user.id)
+            .where(users.c.id == userId)
             .values(
                 first_name=user.first_name,
                 last_name=user.last_name,
