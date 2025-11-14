@@ -66,7 +66,7 @@ const toMonShort = (d) => d.toLocaleDateString("en-US", { month: "short" });
 const toCsv = (rows) => {
   const cols = [
     "id", "date", "trainerId", "trainer", "project_id", "project", "manager", "lead", "podLead",
-    "hours", "inProgress", "taskCompleted", "reworked", "approved", "rejected", "reviewed"
+    "hours", "billable", "inProgress", "taskCompleted", "reworked", "approved", "rejected", "reviewed"
   ];
   if (!rows?.length) return cols.join(",") + "\n";
   const head = cols.join(",");
@@ -144,7 +144,6 @@ export default function TaskMonitoring() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorBanner, setErrorBanner] = useState(null);
-  const [isBillable, setIsBillable] = useState(false);
 
   /* ---------- view controls ---------- */
   const [range, setRange] = useState("day"); // day | week | month | overall
@@ -195,8 +194,10 @@ export default function TaskMonitoring() {
     podLead: "",
     hours: "",
     overtime: false,
+    billable: false,
     taskCompleted: 0,
     reworked: 0,
+    inProgress: 0,
     approved: 0,
     rejected: 0,
     reviewed: 0,
@@ -260,6 +261,8 @@ export default function TaskMonitoring() {
             podLead: t.pod_lead || t.pod_name || "",
             hours: Number(t.hours_logged || 0),
             overtime: Number(t.hours_logged || 0) > 8,
+            inProgress: Number(t.task_inprogress || 0),
+            billable: Boolean(t.is_billable || false),
             taskCompleted: Number(t.task_completed || 0),
             reworked: Number(t.task_reworked || t.reworked || 0),
             approved: Number(t.task_approved || 0),
@@ -375,7 +378,6 @@ export default function TaskMonitoring() {
   /* ========== Action handlers ========== */
   const onAdd = () => {
     setMode("add");
-    setIsBillable(false);
     setForm({ ...emptyForm });
     setSubmitted(false);
     setShowModal(true);
@@ -383,7 +385,6 @@ export default function TaskMonitoring() {
 
   const onEdit = (r) => {
     setMode("edit");
-    r.hours > 0 ? setIsBillable(true) : setIsBillable(false);
     setForm({
       ...emptyForm,
       ...r,
@@ -494,7 +495,9 @@ export default function TaskMonitoring() {
       employees_id: form.trainerId,
       project_id: form.project_id ? Number(form.project_id) : 0,
       task_date: form.date || TODAY,
+      billable: form.billable || 0,
       task_completed: Number(form.taskCompleted || 0),
+      task_inprogress: Number(form.inProgress || 0),
       task_reworked: Number(form.reworked || 0),
       task_approved: Number(form.approved || 0),
       task_rejected: Number(form.rejected || 0),
@@ -521,6 +524,8 @@ export default function TaskMonitoring() {
           lead: created.lead || created.t_manager || form.lead,
           podLead: created.pod_lead || form.podLead,
           hours: Number(created.hours_logged ?? payload.hours_logged),
+          billable: Boolean(created.billable || payload.billable || false),
+          inProgress: Number(created.task_inprogress ?? payload.task_inprogress),
           taskCompleted: Number(created.task_completed ?? payload.task_completed),
           reworked: Number(created.task_reworked ?? payload.task_reworked),
           approved: Number(created.task_approved ?? payload.task_approved),
@@ -550,6 +555,7 @@ export default function TaskMonitoring() {
                 lead: updated.t_manager || form.lead,
                 podLead: updated.pod_lead || form.podLead,
                 hours: Number(updated.hours_logged ?? payload.hours_logged),
+                billable: Boolean(updated.billable || payload.billable || false),
                 inProgress: Number(updated.task_inprogress ?? payload.task_inprogress),
                 taskCompleted: Number(updated.task_completed ?? payload.task_completed),
                 reworked: Number(updated.task_reworked ?? payload.task_reworked),
@@ -920,7 +926,7 @@ export default function TaskMonitoring() {
                     <td>{r.lead}</td>
                     <td>{r.podLead}</td>
                     <td>{r.hours}</td>
-                    <td>{r.hours > 0 ? "Billable" : "Non-Billable"}</td>
+                    <td>{r.billable ? "Billable" : "Non-Billable"}</td>
                     <td className="text-warning fw-semibold">{r.taskCompleted}</td>
                     <td className="text-danger fw-semibold">{r.reworked}</td>
                     <td className="text-success fw-semibold">{r.approved}</td>
@@ -1123,24 +1129,8 @@ export default function TaskMonitoring() {
                             />
                             {submitted && errors.date && <div className="invalid-feedback">{errors.date}</div>}
                           </div>
-                          <div className="col-12 col-md-6">
-                            <div className="form-check form-switch switch-inline">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                id="switchInactive"
-                                checked={isBillable}
-                                onChange={(e) => setIsBillable(e.target.checked)}
-                              />
-                              <label className="form-check-label" htmlFor="switchInactive">
-                                Is Billable?
-                              </label>
-                            </div>
-                          </div>
 
-                          {isBillable && (
-                            <>
-                              <div className="col-12 col-md-4">
+                          <div className="col-12 col-md-6">
                                 <label className="form-label">Hours Worked <span className="text-danger">*</span></label>
                                 <div className="d-flex align-items-center gap-2">
                                   <input
@@ -1152,18 +1142,51 @@ export default function TaskMonitoring() {
                                     onChange={e => setForm(f => ({ ...f, hours: e.target.value }))}
                                     placeholder={"e.g. 0 to " + (form.overtime ? "24" : "8")}
                                   />
-                                  <div className="form-check ms-2">
-                                    <input className="form-check-input" type="checkbox" id="chkOt" checked={form.overtime} onChange={e => setForm(f => ({ ...f, overtime: e.target.checked }))} />
-                                    <label className="form-check-label" htmlFor="chkOt">Overtime</label>
+                                  <div className="form-check form-switch switch-inline">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id="chkOt"
+                                      checked={form.overtime}
+                                      onChange={(e) => setForm(f => ({ ...f, overtime: e.target.checked }))}
+                                    />
+                                    <label className="form-check-label" htmlFor="chkOt">
+                                      Overtime?
+                                    </label>
+                                  </div>
+                                  <div className="form-check form-switch switch-inline">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      id="switchInactive"
+                                      checked={form.billable}
+                                      onChange={(e) => setForm(f => ({ ...f, billable: e.target.checked }))}
+                                    />
+                                    <label className="form-check-label text-nowrap" htmlFor="switchInactive">
+                                      Is Billable?
+                                    </label>
                                   </div>
                                 </div>
                                 {submitted && errors.hours && <div className="invalid-feedback d-block">{errors.hours}</div>}
-                                <div className="form-text">Max 8 hrs (unlimited when Overtime is checked).</div>
+                                <div className="form-text">Max 8 hrs (24hrs when Overtime is checked).</div>
                               </div>
+
+                          {form.billable && (
+                            <>
                               <div className="col-12 col-md-4">
                                 <label className="form-label text-primary">Tasks Completed</label>
                                 <input type="number" className={`form-control ${submitted && errors.taskCompleted ? "is-invalid" : ""}`} value={form.taskCompleted} onChange={e => setForm(f => ({ ...f, taskCompleted: e.target.value }))} />
                                 {submitted && errors.taskCompleted && <div className="invalid-feedback">{errors.taskCompleted}</div>}
+                              </div>
+                              <div className="col-12 col-md-4">
+                                <label className="form-label text-info">In Progress</label>
+                                <input
+                                  type="number"
+                                  className={`form-control ${submitted && errors.inProgress ? "is-invalid" : ""}`}
+                                  value={form.inProgress}
+                                  onChange={(e) => setForm((f) => ({ ...f, inProgress: e.target.value }))}
+                                />
+                                {submitted && errors.inProgress && <div className="invalid-feedback">{errors.inProgress}</div>}
                               </div>
                               <div className="col-12 col-md-4">
                                 <label className="form-label text-danger">Reworked</label>

@@ -122,6 +122,7 @@ task_monitors = sa.Table(
     sa.Column("task_rejected", sa.Integer, nullable=False, server_default="0"),
     sa.Column("task_reviewed", sa.Integer, nullable=False, server_default="0"),
     sa.Column("hours_logged", sa.Numeric(4, 2), nullable=False, server_default="0.00"),
+    sa.Column("billable", sa.Boolean, nullable=False, server_default="false"),
     sa.Column("description", sa.Text, nullable=True),
     *timestamp_columns(),
 )

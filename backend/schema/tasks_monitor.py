@@ -22,6 +22,7 @@ class TaskMonitorBase(BaseModel):
     task_rejected   : NonNegativeInt = Field(0, description="Number of tasks rejected")
     task_reviewed   : NonNegativeInt = Field(0, description="Number of tasks reviewed")
     hours_logged    : HoursLogged = Field(0.00, description="Hours logged")
+    billable        : Optional[bool] = Field(False, description="Indicates if the tasks are billable")
     description     : Optional[str] = Field(None, description="Description of the tasks")
     project_name    : Optional[str] = Field(None, description="Name of the project")
     manager         : Optional[str] = Field(None, description="Name of the manager")
@@ -45,14 +46,15 @@ class TaskMonitorCreate(BaseModel):
     task_rejected   : NonNegativeInt = Field(0, description="Number of tasks rejected")
     task_reviewed   : NonNegativeInt = Field(0, description="Number of tasks reviewed")
     hours_logged    : HoursLogged = Field(0.00, description="Hours logged")
+    billable        : Optional[bool] = Field(False, description="Indicates if the tasks are billable")
     description     : Optional[str] = Field(None, description="Description of the tasks")
-
 
 
 class TaskMonitorUpdate(BaseModel):
     """Schema for updating task monitor entry (all fields optional)"""
     project_staffing_id : int = Field(None, description="Unique identifier for the project staffing")
     task_date           : Optional[date] = Field(None, description="Date of the task entry")
+    billable            : Optional[bool] = Field(False, description="Indicates if the tasks are billable")
     task_completed      : Optional[NonNegativeInt] = Field(0, description="Number of tasks completed")
     task_inprogress     : Optional[NonNegativeInt] = Field(0, description="Number of tasks in progress")
     task_reworked       : Optional[NonNegativeInt] = Field(0, description="Number of tasks reworked")
