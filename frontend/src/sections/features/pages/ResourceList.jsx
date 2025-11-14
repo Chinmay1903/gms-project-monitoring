@@ -148,7 +148,7 @@ export default function ResourceList() {
           roleName: emp.role_name,
           gender: emp.gender,
           email: emp.email,
-          c_email: emp.corporate_email,
+          c_email: emp.c_email,
           mobile: emp.phone,
           designation: emp.designation,
           skill: emp.skill,
