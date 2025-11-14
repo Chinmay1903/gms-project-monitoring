@@ -39,7 +39,7 @@ class TaskMonitorsCurd:
                 tm.c.task_id,
                 tm.c.project_staffing_id,
                 tm.c.task_date,
-                tm.c.billlable,
+                tm.c.billable,
                 tm.c.task_completed,
                 tm.c.task_inprogress,
                 tm.c.task_reworked,
