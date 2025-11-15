@@ -12,13 +12,13 @@ load_dotenv()
 # Use async driver for `databases` (recommended)
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+asyncpg://postgres:Pathak%40123@localhost:5432/GMS_database"
+    "postgresql://postgres:Pathak%40123@localhost:5432/GMS_database"
 )
 
 # If you still need a sync engine (e.g., for create_all), keep a separate URL
 SYNC_DATABASE_URL = os.getenv(
     "SYNC_DATABASE_URL",
-    "postgresql+psycopg2://postgres:Pathak%40123@localhost:5432/GMS_database"
+    "postgresql://postgres:Pathak%40123@localhost:5432/GMS_database"
 )
 
 database = databases.Database(DATABASE_URL)
